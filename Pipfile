@@ -5,10 +5,11 @@ name = "pypi"
 
 [packages]
 django = "*"
-djangorestframework = "*"
 python-dotenv = "*"
 pdfplumber = "*"
 python-docx = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [dev-packages]
 

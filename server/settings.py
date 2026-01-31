@@ -40,7 +40,9 @@ MEDIA_ROOT=BASE_DIR/"media"
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'rest_framework',
     'resumes',
+    'core',
     'common',
     'jobs',
     'matching',
@@ -131,3 +133,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+REST_FRAMWORKD={
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+
+}

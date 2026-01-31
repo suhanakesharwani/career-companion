@@ -20,8 +20,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("",include("matching.urls")),
+    path("",include("core.urls")),
+    path("resume-jd-matcher/",include("matching.urls")),
     path('accounts/', include('django.contrib.auth.urls')), 
+    path('application-tracker/', include('jobs.urls')), 
 ]
 
 if settings.DEBUG==True:
