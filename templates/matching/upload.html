@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Resume-Job Matcher </title>
+</head>
+<body>
+
+    <h1>Upload resume and Job Description</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {%csrf_token%}
+        <div>
+            <label>Upload Resume (PDF/DOCX) </label> <br>
+            <input type="file" name="resume" required>
+        </div>
+
+        <div>
+            <label>Paste Job Description </label> <br>
+            <textarea name="jd_text" rows="10" cols="70" required> </textarea>
+        </div>
+
+        <br>
+
+        <button type="submit">Analyze Match</button>
+    </form>
+    
+</body>
+</html>
