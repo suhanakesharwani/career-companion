@@ -28,7 +28,7 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
 
 
 
-    permission_classes=[IsAuthenticated,IsOwnerOrAdmin]
+    permission_classes=[IsAuthenticated]
     serializer_class=JobApplicationSerializer
 
 
