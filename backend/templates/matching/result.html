@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Match Result</title>
+</head>
+<body>
+
+    <h2>Resume-Job Match</h2>
+
+    <h3>match overall score</h3>
+
+    <p> <strong> {{result.score}} %</strong></p>
+    
+
+
+    <h3>Matching Skills</h3>
+
+    {% if result.matched_skills %}
+        <ul>
+            {% for skill in result.matched_skills %}
+
+                <li> {{skill }} </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>No Matching Skills </p>
+
+    {% endif %}
+
+
+     <h3>Missing Skills</h3>
+
+    {% if result.missing_skills %}
+        <ul>
+            {% for skill in result.missing_skills %}
+
+                <li> {{skill }} </li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>No Missing Skills </p>
+
+    {% endif %}
+
+
+                                           
+</body>
+</html>
