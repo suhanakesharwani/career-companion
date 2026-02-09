@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets
 from .models import JobApplication
 from .serializer import JobApplicationSerializer
-
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated,BasePermission
 @login_required
 def upload_jd(request):
@@ -27,9 +27,10 @@ class IsOwnerOrAdmin(BasePermission):
 class JobApplicationViewSet(viewsets.ModelViewSet):
 
 
-
     permission_classes=[IsAuthenticated]
     serializer_class=JobApplicationSerializer
+    paginator = PageNumberPagination()
+    paginator.page_size = 5
 
 
     def get_queryset(self):
