@@ -7,6 +7,8 @@ from .models import JobApplication
 from .serializer import JobApplicationSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated,BasePermission
+
+from django_filters.rest_framework import DjangoFilterBackend
 @login_required
 def upload_jd(request):
     if request.method=="POST":
@@ -31,6 +33,9 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
     serializer_class=JobApplicationSerializer
     paginator = PageNumberPagination()
     paginator.page_size = 5
+
+    filter_backends=[DjangoFilterBackend]
+    filterset_fields=["status","company"]
 
 
     def get_queryset(self):
