@@ -10,6 +10,7 @@ pdfplumber = "*"
 python-docx = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
