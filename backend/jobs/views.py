@@ -9,7 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated,BasePermission
 
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter,SearchFilter
 
 @login_required
 def upload_jd(request):
@@ -36,7 +36,7 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
     paginator = PageNumberPagination()
     paginator.page_size = 5
 
-    filter_backends=[DjangoFilterBackend]
+    filter_backends=[DjangoFilterBackend,SearchFilter,OrderingFilter]
     filterset_fields=["status","company"]
 
     ordering_fields=[
@@ -46,6 +46,8 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
         'status'
     ]
     ordering = ['-created_at'] 
+
+    search_fields=["company","staus","job_title"]
 
 
     def get_queryset(self):
