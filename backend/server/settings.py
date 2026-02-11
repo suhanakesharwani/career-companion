@@ -31,6 +31,13 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = os.getenv("DEBUG") == "True"
 
 
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost",
+]
+
+
 ALLOWED_HOSTS = []
 
 MEDIA_URL='/media/'
@@ -50,6 +57,7 @@ INSTALLED_APPS = [
     'jobs',
     'matching',
     'accounts',
+    'debug_toolbar',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -63,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',

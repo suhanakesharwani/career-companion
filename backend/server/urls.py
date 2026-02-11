@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+import debug_toolbar
 
 from rest_framework_simplejwt.views import(
     TokenObtainPairView,
@@ -28,16 +29,17 @@ from rest_framework_simplejwt.views import(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",include("core.urls")),
+    path("__debug__/", include(debug_toolbar.urls)),
     path("resume-jd-matcher/",include("matching.urls")),
     path('accounts/', include('django.contrib.auth.urls')), 
     path('api/auth/', include('accounts.urls')),
     path('application-tracker/', include('jobs.urls')), 
     path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-]
+] 
 
 if settings.DEBUG==True:
     urlpatterns+= static (
         settings.MEDIA_URL,
         document_root=settings.MEDIA_ROOT
-    )
+    ) 
