@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated,BasePermission
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter,SearchFilter
+from django.core.cache import cache
 
 @login_required
 def upload_jd(request):
@@ -51,10 +52,23 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
 
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return JobApplication.objects.all()
-        return JobApplication.objects.filter(user=self.request.user)
+        user=self.request.user
+        cache_key=f"job_application_{user.id}"
+
+        queryset = cache.get(cache_key)
+        if queryset is None:
+            print("cache missed, query hit database")
+
+            if  user.is_staff:
+                queryset= JobApplication.objects.all()
+            else:
+                queryset= JobApplication.objects.filter(user=user)
         
+            cache.set(cache_key,queryset,timeout=300)
+        else: 
+            print("cache hit !")
+        return queryset
+            
     
 
     def perform_create(self, serializer):
