@@ -13,11 +13,15 @@ from .utils import calculate_matching_result
 
 # contains upload input and output operations only
 
-@login_required
+
+
+@login_required(login_url='/accounts/login/')
 def upload_and_match(request):
     if request.method=="POST":
 
         resume_file=request.FILES["resume"]
+        if resume_file.size > 5 * 1024 * 1024: 
+            return HttpResponse("File too large!", status=400)
         jd_text=request.POST.get("jd_text")
 
         resume=Resume.objects.create(

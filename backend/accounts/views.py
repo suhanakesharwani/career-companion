@@ -13,8 +13,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import RegisterSerializer
 
+
+def login_page(request):
+    # Just render the login template
+    print("login_page view called!")
+    return render(request, "accounts/login.html")
+
+
 class RegisterView(APIView):
     permission_classes = []  # Allow unauthenticated users
+
+    def get(self, request):
+        return render(request, "accounts/register.html")
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)

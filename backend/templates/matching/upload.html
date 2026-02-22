@@ -3,25 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Resume-Job Matcher </title>
+    <title>Resume–Job Matcher</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #181C14;
+            color: #ECDFCC;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #ECDFCC;
+        }
+
+        form {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #3C3D37;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #697565;
+        }
+
+        input[type="file"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            border: 1px solid #697565;
+            background: #181C14;
+            color: #ECDFCC;
+            box-sizing: border-box;
+        }
+
+        textarea::placeholder, input::placeholder {
+            color: #697565;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            background: #697565;
+            color: #ECDFCC;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ECDFCC;
+            color: #3C3D37;
+        }
+
+        div {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Upload resume and Job Description</h1>
+    <h1>Upload Resume and Job Description</h1>
 
     <form method="POST" enctype="multipart/form-data">
-        {%csrf_token%}
+        {% csrf_token %}
         <div>
-            <label>Upload Resume (PDF/DOCX) </label> <br>
+            <label>Upload Resume (PDF/DOCX)</label>
             <input type="file" name="resume" required>
         </div>
 
         <div>
-            <label>Paste Job Description </label> <br>
-            <textarea name="jd_text" rows="10" cols="70" required> </textarea>
+            <label>Paste Job Description</label>
+            <textarea name="jd_text" rows="10" placeholder="Paste the job description here..." required></textarea>
         </div>
-
-        <br>
 
         <button type="submit">Analyze Match</button>
     </form>

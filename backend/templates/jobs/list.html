@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Tracker Pro</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #181C14;
+            color: #ECDFCC;
+        }
+
+        .section {
+            background: #3C3D37;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-bottom: 25px;
+        }
+
+        h2, h3 {
+            color: #ECDFCC;
+            margin-top: 0;
+        }
+
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .full-width { grid-column: span 2; }
+        .form-group { margin-bottom: 12px; }
+        label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #697565;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #697565;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background: #181C14;
+            color: #ECDFCC;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #697565;
+        }
+
+        button {
+            background: #697565;
+            color: #ECDFCC;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        button:hover {
+            background: #ECDFCC;
+            color: #3C3D37;
+        }
+
+        /* Job Card Styling */
+        .job-card {
+            position: relative;
+            background: #3C3D37;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 6px solid #697565;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            color: #ECDFCC;
+        }
+        .job-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            color: #ECDFCC;
+        }
+        .meta-info {
+            display: flex;
+            gap: 20px;
+            font-size: 0.85em;
+            color: #697565;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .notes-box {
+            background: #181C14;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-style: italic;
+            border-top: 1px solid #697565;
+            margin-top: 10px;
+            color: #ECDFCC;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Status Colors */
+        .status-applied { background: #697565; color: #ECDFCC; }
+        .status-interview { background: #ECDFCC; color: #3C3D37; }
+        .status-offer { background: #3C3D37; color: #ECDFCC; }
+        .status-rejected { background: #181C14; color: #ECDFCC; }
+        .status-not_applied { background: #3C3D37; color: #697565; }
+    </style>
+</head>
+<body>
+
+    <div class="section">
+        <h3>🚀 Track New Application</h3>
+        <form id="addJobForm">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" name="company" placeholder="e.g. Google" required>
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <input type="text" name="role" placeholder="e.g. Backend Developer" required>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="not applied">Not Applied</option>
+                        <option value="applied">Applied</option>
+                        <option value="interview">Interview</option>
+                        <option value="offer">Offer</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Job Link</label>
+                    <input type="url" name="job_link" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Date Applied</label>
+                    <input type="date" name="date_applied">
+                </div>
+                <div class="form-group">
+                    <label>Deadline</label>
+                    <input type="date" name="deadline">
+                </div>
+                <div class="form-group full-width">
+                    <label>Notes</label>
+                    <textarea name="notes" rows="2" placeholder="Mention tech stack, referral info, etc."></textarea>
+                </div>
+            </div>
+            <button type="submit">Add Application</button>
+        </form>
+        <p id="msg"></p>
+    </div>
+
+    <div class="section">
+        <h3>My Career Pipeline</h3>
+        <div id="job-list">
+            <p>Loading your applications...</p>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("access_token");
+        const listDiv = document.getElementById("job-list");
+
+        async function fetchJobs() {
+            try {
+                const response = await fetch("/application-tracker/api/applications/", {
+                    headers: { "Authorization": "Bearer " + token }
+                });
+                const data = await response.json();
+                const jobs = data.results || [];
+                
+                listDiv.innerHTML = jobs.length ? "" : "<p>No applications found. Start by adding one above!</p>";
+                
+                jobs.forEach(job => {
+                    const statusClass = "status-" + job.status.replace(" ", "_");
+                    const card = document.createElement("div");
+                    card.className = "job-card";
+                    card.innerHTML = `
+                        <span class="status-badge ${statusClass}">${job.status}</span>
+                        <h4>${job.company}</h4>
+                        <p style="margin: 0; font-weight: 600; color: #ECDFCC;">${job.role}</p>
+                        
+                        <div class="meta-info">
+                            <span>📅 <strong>Applied:</strong> ${job.date_applied || 'N/A'}</span>
+                            <span>⏰ <strong>Deadline:</strong> ${job.deadline || 'N/A'}</span>
+                            ${job.job_link ? `<span>🔗 <a href="${job.job_link}" target="_blank" style="color:#ECDFCC;">Job Post</a></span>` : ''}
+                        </div>
+
+                        ${job.notes ? `<div class="notes-box"><strong>Notes:</strong> ${job.notes}</div>` : ''}
+                    `;
+                    listDiv.appendChild(card);
+                });
+            } catch (err) {
+                listDiv.innerHTML = "<p>Error loading data.</p>";
+            }
+        }
+
+        document.getElementById("addJobForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const payload = Object.fromEntries(formData.entries());
+            if (!payload.date_applied) delete payload.date_applied;
+            if (!payload.deadline) delete payload.deadline;
+
+            const response = await fetch("/application-tracker/api/applications/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                this.reset();
+                fetchJobs();
+            } else {
+                alert("Failed to save application. Check your inputs.");
+            }
+        });
+
+        fetchJobs();
+    </script>
+</body>
+</html>

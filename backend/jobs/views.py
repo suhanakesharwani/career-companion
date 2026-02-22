@@ -12,7 +12,16 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django.core.cache import cache
 
-@login_required
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+
+@login_required(login_url='/accounts/login/')
+def job_list_page(request):
+    # This view doesn't need JWT because it just returns the empty HTML shell
+    return render(request, "jobs/list.html")
+
+
 def upload_jd(request):
     if request.method=="POST":
         raw_text=request.te
@@ -31,7 +40,7 @@ class IsOwnerOrAdmin(BasePermission):
 
 class JobApplicationViewSet(viewsets.ModelViewSet):
 
-
+    authentication_classes = [JWTAuthentication] 
     permission_classes=[IsAuthenticated]
     serializer_class=JobApplicationSerializer
     paginator = PageNumberPagination()
@@ -50,24 +59,30 @@ class JobApplicationViewSet(viewsets.ModelViewSet):
 
     search_fields=["company","staus","job_title"]
 
-
     def get_queryset(self):
-        user=self.request.user
-        cache_key=f"job_application_{user.id}"
+        user = self.request.user
 
-        queryset = cache.get(cache_key)
-        if queryset is None:
-            print("cache missed, query hit database")
+        if user.is_staff:
+            return JobApplication.objects.all()
+        return JobApplication.objects.filter(user=user)
 
-            if  user.is_staff:
-                queryset= JobApplication.objects.all()
-            else:
-                queryset= JobApplication.objects.filter(user=user)
+    # def get_queryset(self):
+    #     user=self.request.user
+    #     # cache_key=f"job_application_{user.id}"
+
+    #     # queryset = cache.get(cache_key)
+    #     if queryset is None:
+    #         print("cache missed, query hit database")
+
+    #         if  user.is_staff:
+    #             queryset= JobApplication.objects.all()
+    #         else:
+    #             queryset= JobApplication.objects.filter(user=user)
         
-            cache.set(cache_key,queryset,timeout=300)
-        else: 
-            print("cache hit !")
-        return queryset
+    #         # cache.set(cache_key,queryset,timeout=300)
+    #     else: 
+    #         print("cache hit !")
+    #     return queryset
             
     
 
