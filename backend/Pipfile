@@ -14,6 +14,7 @@ django-cors-headers = "*"
 django-filter = "*"
 django-debug-toolbar = "*"
 django-redis = "*"
+sentence-transformers = "*"
 
 [dev-packages]
 

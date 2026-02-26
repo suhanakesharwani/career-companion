@@ -13,49 +13,110 @@ def clean_text(text):
     return text.strip()
 
 
+# def get_skills(text):
+#     SKILL_SET = {
+#     # Programming & Core
+#     "python", "c", "c++", "data structures", "algorithms",
+
+#     # Backend & Web
+#     "django", "django rest framework", "flask",
+#     "rest apis", "authentication", "authorization",
+
+#     # Frontend
+#     "html", "css", "javascript", "react",
+#     "redux", "responsive design",
+
+#     # Databases
+#     "sql", "postgresql", "mysql", "sqlite",
+#     "database design", "orm",
+
+#     # Machine Learning
+#     "machine learning", "supervised learning", "unsupervised learning",
+#     "model evaluation", "feature engineering",
+
+#     # Deep Learning & NLP
+#     "nlp", "deep learning",
+#     "tensorflow", "pytorch",
+#     "transformers", "sentiment analysis",
+
+#     # Data & Visualization
+#     "numpy", "pandas", "matplotlib",
+#     "exploratory data analysis",
+
+#     # DevOps & Deployment
+#     "git", "github",
+#     "docker", "ci/cd",
+#     "render", "heroku", "cloud deployment",
+
+#     # Tools & Practices
+#     "linux basics", "virtual environments",
+#     "pipenv", "debugging", "api testing"
+# }
+
+#     found=set()
+
+#     for skill in SKILL_SET:
+#         if skill in text:
+#             found.add(skill)
+#     return list(found)
+
 def get_skills(text):
-    SKILL_SET = {
-    # Programming & Core
-    "python", "c", "c++", "data structures", "algorithms",
+    """
+    Lightweight skill extractor.
+    Keeps phrases instead of strict filtering.
+    """
 
-    # Backend & Web
-    "django", "django rest framework", "flask",
-    "rest apis", "authentication", "authorization",
+    text = text.lower()
 
-    # Frontend
-    "html", "css", "javascript", "react",
-    "redux", "responsive design",
+    known_skills = [
+        # Programming & Core
+        "python", "c", "c++", "data structures", "algorithms",
 
-    # Databases
-    "sql", "postgresql", "mysql", "sqlite",
-    "database design", "orm",
+        # Backend & Web
+        "django", "django rest framework", "flask",
+        "rest apis", "authentication", "authorization",
 
-    # Machine Learning
-    "machine learning", "supervised learning", "unsupervised learning",
-    "model evaluation", "feature engineering",
+        # Frontend
+        "html", "css", "javascript", "react",
+        "redux", "responsive design",
 
-    # Deep Learning & NLP
-    "nlp", "deep learning",
-    "tensorflow", "pytorch",
-    "transformers", "sentiment analysis",
+        # Databases
+        "sql", "postgresql", "mysql", "sqlite",
+        "database design", "orm",
 
-    # Data & Visualization
-    "numpy", "pandas", "matplotlib",
-    "exploratory data analysis",
+        # Machine Learning
+        "machine learning", "supervised learning", "unsupervised learning",
+        "model evaluation", "feature engineering",
 
-    # DevOps & Deployment
-    "git", "github",
-    "docker", "ci/cd",
-    "render", "heroku", "cloud deployment",
+        # Deep Learning & NLP
+        "nlp", "deep learning",
+        "tensorflow", "pytorch",
+        "transformers", "sentiment analysis",
 
-    # Tools & Practices
-    "linux basics", "virtual environments",
-    "pipenv", "debugging", "api testing"
-}
+        # Data & Visualization
+        "numpy", "pandas", "matplotlib",
+        "exploratory data analysis",
 
-    found=set()
+        # DevOps & Deployment
+        "git", "github",
+        "docker", "ci/cd",
+        "render", "heroku", "cloud deployment",
 
-    for skill in SKILL_SET:
+        # Tools & Practices
+        "linux basics", "virtual environments",
+        "pipenv", "debugging", "api testing"
+    ]
+
+    extracted = set()
+
+    for skill in known_skills:
         if skill in text:
-            found.add(skill)
-    return list(found)
+            extracted.add(skill)
+
+    # fallback: keep short tech phrases
+    words = text.split()
+    for w in words:
+        if len(w) > 2 and not w.isnumeric():
+            extracted.add(w)
+
+    return list(extracted)

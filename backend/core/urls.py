@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import home,landing
+from .views import HomeView,LandingView
 
 urlpatterns=[
-     path('', landing, name="landing"),     # Landing page first
-    path('home/', home, name="home"),
+     path('', LandingView.as_view()),     # Landing page first
+    path('home/', HomeView.as_view()),
 ]

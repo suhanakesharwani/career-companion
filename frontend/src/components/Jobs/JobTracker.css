@@ -1,0 +1,187 @@
+/* ---------------- PAGE WRAPPER ---------------- */
+.job-page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
+  font-family: "Inter", Arial, sans-serif;
+  background: #050807;
+  color: #eafff3;
+}
+
+/* ---------------- SECTIONS ---------------- */
+.section {
+  background: #0a1411;
+  padding: 28px;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  border: 1px solid #00ff9c33;
+  box-shadow: 0 0 25px #00ff9c22;
+}
+
+.section h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #00ff9c;
+}
+
+/* ---------------- FORM ---------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-grid .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-grid label {
+  font-size: 0.85em;
+  margin-bottom: 6px;
+  color: #9fffe0;
+}
+
+/* Inputs */
+.form-grid input,
+.form-grid select,
+.form-grid textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #00ff9c44;
+  background: #050807;
+  color: #eafff3;
+  font-size: 0.95em;
+}
+
+.form-grid input::placeholder,
+.form-grid textarea::placeholder {
+  color: #7bdcc0;
+}
+
+.form-grid textarea {
+  grid-column: span 2;
+  resize: vertical;
+}
+
+/* Submit button */
+.form-grid button {
+  grid-column: span 2;
+  padding: 14px;
+  margin-top: 10px;
+  background: #00ff9c;
+  color: #050807;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1em;
+  box-shadow: 0 0 20px #00ff9c66;
+}
+
+.form-grid button:hover {
+  background: #050807;
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+}
+
+/* ---------------- JOB CARD ---------------- */
+.job-card {
+  position: relative;
+  background: #0a1411;
+  padding: 22px;
+  border-radius: 14px;
+  margin-bottom: 16px;
+  border-left: 4px solid #00ff9c;
+  box-shadow: 0 0 18px #00ff9c22;
+  display: flex;
+  flex-direction: column;
+}
+
+.job-card h4 {
+  margin: 0 0 6px 0;
+  font-size: 1.2em;
+  color: #00ff9c;
+}
+
+.job-card .role {
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #9fffe0;
+}
+
+/* Meta info */
+.meta-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 0.85em;
+  color: #caffea;
+}
+
+/* Notes */
+.notes-box {
+  margin-top: 14px;
+  padding: 12px;
+  background: #050807;
+  border-radius: 8px;
+  font-size: 0.9em;
+  border-top: 1px solid #00ff9c33;
+}
+
+/* ---------------- STATUS BADGE ---------------- */
+.status-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Status colors */
+.status-not_applied {
+  background: #050807;
+  color: #7bdcc0;
+  border: 1px solid #00ff9c33;
+}
+
+.status-applied {
+  background: #00ff9c;
+  color: #050807;
+}
+
+.status-interview {
+  background: #9fffe0;
+  color: #050807;
+}
+
+.status-offer {
+  background: #00ff9c;
+  color: #050807;
+}
+
+.status-rejected {
+  background: #050807;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid textarea,
+  .form-grid button {
+    grid-column: span 1;
+  }
+
+  .status-badge {
+    position: static;
+    margin-bottom: 10px;
+  }
+}

@@ -1,0 +1,82 @@
+.register-page {
+  font-family: "Inter", Arial, sans-serif;
+  background: #050807;
+  color: #eafff3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Card */
+.register-container {
+  background: #0a1411;
+  padding: 42px 32px;
+  border-radius: 18px;
+  border: 1px solid #00ff9c33;
+  box-shadow: 0 0 30px #00ff9c22;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.register-container h2 {
+  margin-bottom: 22px;
+  color: #00ff9c;
+}
+
+/* Inputs */
+.register-container input {
+  width: 92%;
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid #00ff9c44;
+  border-radius: 8px;
+  background: #050807;
+  color: #eafff3;
+  font-size: 1em;
+}
+
+.register-container input::placeholder {
+  color: #7bdcc0;
+}
+
+/* Buttons */
+.register-container button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #00ff9c;
+  color: #050807;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1em;
+  box-shadow: 0 0 20px #00ff9c66;
+}
+
+.register-container button:hover {
+  background: #050807;
+  color: #00ff9c;
+  border: 1px solid #00ff9c;
+}
+
+/* Secondary */
+.secondary-btn {
+  background: transparent;
+  border: 1px solid #00ff9c44;
+  color: #eafff3;
+}
+
+.secondary-btn:hover {
+  background: #050807;
+  color: #00ff9c;
+}
+
+/* Message */
+.msg {
+  margin-top: 16px;
+  font-size: 0.9em;
+  color: #9fffe0;
+}

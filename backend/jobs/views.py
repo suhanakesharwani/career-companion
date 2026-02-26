@@ -12,15 +12,23 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter,SearchFilter
 from django.core.cache import cache
 
-
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-@login_required(login_url='/accounts/login/')
-def job_list_page(request):
-    # This view doesn't need JWT because it just returns the empty HTML shell
-    return render(request, "jobs/list.html")
+# @login_required(login_url='/accounts/login/')
+# def job_list_page(request):
+#     # This view doesn't need JWT because it just returns the empty HTML shell
+#     return render(request, "jobs/list.html")
 
+class JobListView(APIView):
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        jobs = JobApplication.objects.all().order_by('-posted_at')  # get all jobs
+        serializer = JobApplicationSerializer(jobs, many=True)
+        return Response(serializer.data)
 
 def upload_jd(request):
     if request.method=="POST":
