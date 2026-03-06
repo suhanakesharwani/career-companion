@@ -33,7 +33,8 @@ class LandingView(APIView):
 #     return render(request, "core/home.html")
 
 class HomeView(APIView):
-    permission_classes = [IsAuthenticated]  # anyone can access
+    permission_classes = [IsAuthenticated]  
+    
 
     def get(self, request):
         if request.user.is_authenticated:

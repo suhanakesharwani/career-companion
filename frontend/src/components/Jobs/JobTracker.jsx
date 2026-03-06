@@ -1,21 +1,19 @@
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom"; // For redirect if not logged in
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./JobTracker.css";
 
 export default function JobTracker() {
+
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Redirect if not logged in
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [token, navigate]);
-
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [editingJob, setEditingJob] = useState(null);
+  const [editForm, setEditForm] = useState({});
+
 
   const [form, setForm] = useState({
     company: "",
@@ -27,50 +25,61 @@ export default function JobTracker() {
     notes: "",
   });
 
-  // ---------------- FETCH JOBS ----------------
-  const fetchJobs = useCallback(async () => {
+  useEffect(() => {
+    if (!token) navigate("/login");
+  }, [token, navigate]);
+
+  // FETCH JOBS
+  const fetchJobs = useCallback(async (page = 1, status = "", ordering = "") => {
+
     if (!token) return;
 
     setLoading(true);
+
     try {
-      const response = await fetch(
-        "http://127.0.0.1:8000/application-tracker/job-application/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+
+      const res = await axios.get(
+        `http://127.0.0.1:8000/application-tracker/job-application/?page=${page}&status=${status}&ordering=${ordering}`,
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const data = await response.json();
+      const jobsArray = Array.isArray(res.data)
+        ? res.data
+        : res.data.results || [];
 
-      // Ensure array
-      const jobsArray = Array.isArray(data) ? data : data.results || [];
       setJobs(jobsArray);
-      setLoading(false);
+
     } catch (err) {
-      console.error("Error fetching jobs:", err);
+
+      console.error("Fetch error:", err);
       setJobs([]);
-      setLoading(false);
+
     }
+
+    setLoading(false);
+
   }, [token]);
 
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
 
-  // ---------------- HANDLE FORM ----------------
-  const handleChange = (e) =>
+  // ADD JOB
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
 
     const payload = { ...form };
+
     if (!payload.date_applied) delete payload.date_applied;
     if (!payload.deadline) delete payload.deadline;
 
     try {
+
       await axios.post(
         "http://127.0.0.1:8000/application-tracker/job-application/",
         payload,
@@ -92,59 +101,124 @@ export default function JobTracker() {
         notes: "",
       });
 
-      fetchJobs(); // Refresh list
+      fetchJobs();
+
     } catch (err) {
+
       console.error("POST error:", err.response?.data || err.message);
       alert("Failed to add application");
+
+    }
+  };
+
+  // START EDIT
+  const startEditing = (job) => {
+
+    setEditingJob(job.id);
+
+    setEditForm({
+      company: job.company || "",
+      role: job.role || "",
+      status: job.status || "",
+      job_link: job.job_link || "",
+      date_applied: job.date_applied || "",
+      deadline: job.deadline || "",
+      notes: job.notes || "",
+    });
+
+  };
+
+  // EDIT CHANGE
+  const handleEditChange = (e) => {
+
+    setEditForm({
+      ...editForm,
+      [e.target.name]: e.target.value,
+    });
+
+  };
+
+  // UPDATE JOB
+  const updateJob = async (e) => {
+
+    e.preventDefault();
+
+    const payload = { ...editForm };
+
+    Object.keys(payload).forEach((key) => {
+      if (payload[key] === "") delete payload[key];
+    });
+
+    try {
+
+      await axios.patch(
+        `http://127.0.0.1:8000/application-tracker/job-application/${editingJob}/`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setEditingJob(null);
+      fetchJobs();
+
+    } catch (err) {
+
+      console.log("PATCH ERROR:", err.response?.data);
+
     }
   };
 
   return (
     <div className="job-page">
-      {/* ---------------- ADD FORM ---------------- */}
+
+      {/* ADD FORM */}
+
       <div className="section">
+
         <h3>🚀 Track New Application</h3>
+
         <form onSubmit={handleSubmit} className="form-grid">
-          <div className="form-group">
-            <input
-              name="company"
-              placeholder="Company"
-              value={form.company}
-              onChange={handleChange}
-              required
-            />
-          </div>
 
-          <div className="form-group">
-            <input
-              name="role"
-              placeholder="Role"
-              value={form.role}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          <input
+            name="company"
+            placeholder="Company"
+            value={form.company}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="form-group">
-            <select name="status" value={form.status} onChange={handleChange}>
-              <option value="not applied">Not Applied</option>
-              <option value="applied">Applied</option>
-              <option value="interview">Interview</option>
-              <option value="offer">Offer</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
+          <input
+            name="role"
+            placeholder="Role"
+            value={form.role}
+            onChange={handleChange}
+            required
+          />
 
-          <div className="form-group">
-            <input
-              name="job_link"
-              placeholder="Job Link"
-              value={form.job_link}
-              onChange={handleChange}
-            />
-          </div>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+          >
+            <option value="not applied">Not Applied</option>
+            <option value="applied">Applied</option>
+            <option value="interview">Interview</option>
+            <option value="offer">Offer</option>
+            <option value="rejected">Rejected</option>
+          </select>
 
-          <div className="form-group">
+          <input
+            name="job_link"
+            placeholder="Job Link"
+            value={form.job_link}
+            onChange={handleChange}
+          />
+
+          <div>
             <label>Date Applied</label>
             <input
               type="date"
@@ -154,7 +228,7 @@ export default function JobTracker() {
             />
           </div>
 
-          <div className="form-group full-width">
+          <div>
             <label>Deadline</label>
             <input
               type="date"
@@ -164,57 +238,156 @@ export default function JobTracker() {
             />
           </div>
 
-          <div className="form-group">
-            <textarea
-              name="notes"
-              placeholder="Notes"
-              value={form.notes}
-              onChange={handleChange}
-            />
-          </div>
+          <textarea
+            name="notes"
+            placeholder="Notes"
+            value={form.notes}
+            onChange={handleChange}
+          />
 
           <button type="submit">Add Application</button>
+
         </form>
+
       </div>
 
-      {/* ---------------- LIST ---------------- */}
+      {/* JOB LIST */}
+
       <div className="section">
+
         <h3>My Career Pipeline</h3>
 
-        {loading && <p>Loading your applications...</p>}
+        {loading && <p>Loading...</p>}
 
-        {!loading && jobs.length === 0 && (
-          <p>No applications found. Start by adding one above!</p>
-        )}
+        {!loading && jobs.length === 0 && <p>No applications yet</p>}
 
         {jobs.map((job) => (
+
           <div className="job-card" key={job.id}>
-            <span
-              className={`status-badge status-${job.status.replace(" ", "_")}`}
-            >
-              {job.status}
-            </span>
 
-            <h4>{job.company}</h4>
-            <p className="role">{job.role}</p>
+            {editingJob === job.id ? (
 
-            <div className="meta-info">
-              <span>📅 Applied: {job.date_applied || "N/A"}</span>
-              <span>⏰ Deadline: {job.deadline || "N/A"}</span>
-              {job.job_link && (
-                <span>
-                  🔗{" "}
-                  <a href={job.job_link} target="_blank" rel="noreferrer">
-                    Job Post
-                  </a>
+              <form onSubmit={updateJob} className="form-grid">
+
+                <input
+                  name="company"
+                  value={editForm.company || ""}
+                  onChange={handleEditChange}
+                />
+
+                <input
+                  name="role"
+                  value={editForm.role || ""}
+                  onChange={handleEditChange}
+                />
+
+                <select
+                  name="status"
+                  value={editForm.status || ""}
+                  onChange={handleEditChange}
+                >
+                  <option value="not applied">Not Applied</option>
+                  <option value="applied">Applied</option>
+                  <option value="interview">Interview</option>
+                  <option value="offer">Offer</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+
+                <input
+                  name="job_link"
+                  placeholder="Job Link"
+                  value={editForm.job_link || ""}
+                  onChange={handleEditChange}
+                />
+
+                <div>
+                  <label>Date Applied</label>
+                  <input
+                    type="date"
+                    name="date_applied"
+                    value={editForm.date_applied || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
+
+                <div>
+                  <label>Deadline</label>
+                  <input
+                    type="date"
+                    name="deadline"
+                    value={editForm.deadline || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
+
+                <textarea
+                  name="notes"
+                  placeholder="Notes"
+                  value={editForm.notes || ""}
+                  onChange={handleEditChange}
+                />
+
+                <button type="submit">Save</button>
+
+                <button
+                  type="button"
+                  onClick={() => setEditingJob(null)}
+                >
+                  Cancel
+                </button>
+
+              </form>
+
+            ) : (
+
+              <>
+
+                <button
+                  className="edit-btn"
+                  onClick={() => startEditing(job)}
+                >
+                  ✏️
+                </button>
+
+                <span className={`status-badge status-${job.status.replace(" ", "_")}`}>
+                  {job.status}
                 </span>
-              )}
-            </div>
 
-            {job.notes && <div className="notes-box">{job.notes}</div>}
+                <h4>{job.company}</h4>
+
+                <p className="role">{job.role}</p>
+
+                <div className="meta-info">
+
+                  <span>📅 Applied: {job.date_applied || "N/A"}</span>
+
+                  <span>⏰ Deadline: {job.deadline || "N/A"}</span>
+
+                  {job.job_link && (
+                    <span>
+                      🔗
+                      <a href={job.job_link} target="_blank" rel="noreferrer">
+                        Job Post
+                      </a>
+                    </span>
+                  )}
+
+                </div>
+
+                {job.notes && (
+                  <div className="notes-box">{job.notes}</div>
+                )}
+
+              </>
+
+            )}
+
           </div>
+
         ))}
+
       </div>
+
     </div>
   );
 }

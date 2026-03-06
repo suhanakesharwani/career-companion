@@ -31,11 +31,6 @@
   gap: 16px;
 }
 
-.form-grid .form-group {
-  display: flex;
-  flex-direction: column;
-}
-
 .form-grid label {
   font-size: 0.85em;
   margin-bottom: 6px;
@@ -52,6 +47,8 @@
   background: #050807;
   color: #eafff3;
   font-size: 0.95em;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-grid input::placeholder,
@@ -129,11 +126,22 @@
   border-top: 1px solid #00ff9c33;
 }
 
+/* ---------------- EDIT BUTTON ---------------- */
+.edit-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
 /* ---------------- STATUS BADGE ---------------- */
 .status-badge {
   position: absolute;
-  top: 18px;
-  right: 18px;
+  top: 10px;
+  right: 60px;   /* moved left from edit button */
   padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.7em;
@@ -169,8 +177,20 @@
   border: 1px solid #ff6b6b;
 }
 
+/* ---------------- DATE PICKER FIX ---------------- */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.form-grid input[type="date"] {
+  position: relative;
+  z-index: 5;
+}
+
 /* ---------------- RESPONSIVE ---------------- */
 @media (max-width: 600px) {
+
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -181,7 +201,7 @@
   }
 
   .status-badge {
-    position: static;
-    margin-bottom: 10px;
+    right: 50px;
   }
+
 }

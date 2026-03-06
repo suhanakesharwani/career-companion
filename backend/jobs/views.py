@@ -46,7 +46,7 @@ class IsOwnerOrAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.is_staff or obj.user==request.user
 
-class JobApplicationViewSet(viewsets.ModelViewSet):
+class JobApplicationViewSet(viewsets.ModelViewSet): #automatically has get post put patch
 
     authentication_classes = [JWTAuthentication] 
     permission_classes=[IsAuthenticated]
