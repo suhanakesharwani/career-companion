@@ -41,4 +41,4 @@ class HomeView(APIView):
             username = request.user.username
         else:
              return Response({"message":"kindly login to access this page"})
-        return Response({"message": f"This is the home page, hi {username}"})
+        return Response({"message": f"Hi {username}"})

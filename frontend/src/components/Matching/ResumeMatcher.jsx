@@ -1,18 +1,165 @@
-// src/components/matching/ResumeMatcher.jsx
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./ResumeMatcher.css";
+
+const style = `
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.matcher-root {
+  min-height: 100vh;
+  background: #0A0A0F;
+  color: #F0EEE8;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* CONTAINER */
+.matcher-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 48px 20px;
+}
+
+/* HEADER */
+.matcher-header h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+}
+
+.matcher-header span {
+  color: #C8FF57;
+}
+
+.matcher-header p {
+  margin-top: 6px;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* FORM CARD */
+.matcher-card {
+  margin-top: 28px;
+  background: #111118;
+  border: 1px solid #1E1E2C;
+  border-radius: 20px;
+  padding: 26px;
+}
+
+/* INPUT */
+.matcher-card input,
+.matcher-card textarea {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #1E1E2C;
+  background: #0A0A0F;
+  color: #F0EEE8;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.matcher-card input:focus,
+.matcher-card textarea:focus {
+  border-color: #C8FF57;
+}
+
+/* BUTTON */
+.matcher-btn {
+  margin-top: 16px;
+  background: #C8FF57;
+  color: #0A0A0F;
+  border: none;
+  border-radius: 100px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.matcher-btn:hover {
+  transform: scale(1.05);
+}
+
+/* ERROR */
+.matcher-error {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: #ff6b6b;
+}
+
+/* RESULT CARD */
+.matcher-result {
+  margin-top: 28px;
+  background: #111118;
+  border: 1px solid #1E1E2C;
+  border-radius: 20px;
+  padding: 26px;
+  animation: fadeUp 0.4s ease;
+}
+
+.matcher-score {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+.matcher-score span {
+  color: #C8FF57;
+}
+
+/* GRID */
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.result-block h4 {
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.result-block ul {
+  list-style: none;
+}
+
+.result-block li {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 6px;
+  padding-left: 14px;
+  position: relative;
+}
+
+.result-block li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #C8FF57;
+}
+
+/* ANIMATION */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
+`;
 
 export default function ResumeMatcher() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Redirect if not logged in
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
   }, [token, navigate]);
 
   const [resume, setResume] = useState(null);
@@ -33,7 +180,6 @@ export default function ResumeMatcher() {
     formData.append("jd_text", jdText);
 
     try {
-      const token = localStorage.getItem("token");
       const res = await axios.post(
         "http://127.0.0.1:8000/matching/",
         formData,
@@ -43,6 +189,7 @@ export default function ResumeMatcher() {
           },
         }
       );
+
       setResult(res.data.matching_result);
       setError("");
     } catch (err) {
@@ -51,47 +198,75 @@ export default function ResumeMatcher() {
   };
 
   return (
-    <div className="matcher-container">
-      <h1>Resume–Job Matcher</h1>
+    <>
+      <style>{style}</style>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="file"
-          accept=".pdf,.doc,.docx"
-          onChange={(e) => setResume(e.target.files[0])}
-        />
+      <div className="matcher-root">
+        <div className="matcher-container">
 
-        <textarea
-          rows="10"
-          placeholder="Paste job description..."
-          value={jdText}
-          onChange={(e) => setJdText(e.target.value)}
-        />
+          {/* HEADER */}
+          <div className="matcher-header">
+            <h1>
+              Resume–JD <span>Matcher</span>
+            </h1>
+            <p>Compare your resume with job descriptions instantly</p>
+          </div>
 
-        <button type="submit">Analyze</button>
-      </form>
+          {/* FORM */}
+          <div className="matcher-card">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={(e) => setResume(e.target.files[0])}
+              />
 
-      {error && <p className="error">{error}</p>}
+              <textarea
+                rows="8"
+                placeholder="Paste job description..."
+                value={jdText}
+                onChange={(e) => setJdText(e.target.value)}
+              />
 
-      {result && (
-        <div className="result">
-          <h3>Score: {Math.round(result.score * 100)}%</h3>
+              <button type="submit" className="matcher-btn">
+                Analyze
+              </button>
+            </form>
 
-          <h4>Matched Skills</h4>
-          <ul>
-            {result.matched_skills.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
+            {error && <p className="matcher-error">{error}</p>}
+          </div>
 
-          <h4>Missing Skills</h4>
-          <ul>
-            {result.missing_skills.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
+          {/* RESULT */}
+          {result && (
+            <div className="matcher-result">
+              <div className="matcher-score">
+                Match Score: <span>{Math.round(result.score * 100)}%</span>
+              </div>
+
+              <div className="result-grid">
+                <div className="result-block">
+                  <h4>Matched Skills</h4>
+                  <ul>
+                    {result.matched_skills.map((s, i) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="result-block">
+                  <h4>Missing Skills</h4>
+                  <ul>
+                    {result.missing_skills.map((s, i) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
-      )}
-    </div>
+      </div>
+    </>
   );
 }

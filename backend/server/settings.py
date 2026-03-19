@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'jobs',
     'matching',
     'accounts',
+    'interview_prep',
     'debug_toolbar',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -165,15 +166,16 @@ REST_FRAMEWORK={
         "accounts.authentication.CsrfExemptSessionAuthentication",
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
 
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    
 
 }
 from datetime import timedelta

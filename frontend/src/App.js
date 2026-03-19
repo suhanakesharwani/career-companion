@@ -8,6 +8,7 @@ import Login from "./components/AuthForm/Login/Login";
 import Home from "./components/Core/Home/Home";
 import ResumeMatcher from "./components/Matching/ResumeMatcher";
 import JobTracker from "./components/Jobs/JobTracker";
+import InterviewPrep from "./components/InterviewPrep/InterviewPrep";
 function App() {
   
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/home" element={<Home />} /> {/* new route */}
         <Route path="/matcher" element={<ResumeMatcher />} />
         <Route path="/jobs" element={<JobTracker />} />
+        <Route path="/interview-prep" element={<InterviewPrep />} />
       </Routes>
     </Router>
 

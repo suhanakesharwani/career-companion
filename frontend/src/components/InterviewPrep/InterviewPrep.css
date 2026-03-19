@@ -1,0 +1,168 @@
+.prep-page {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #050807;
+  color: #eafff3;
+  font-family: "Inter", sans-serif;
+}
+
+/* SECTION */
+.section {
+  background: #0a1411;
+  padding: 24px;
+  border-radius: 18px;
+  margin-bottom: 30px;
+  border: 1px solid #00ff9c33;
+  box-shadow: 0 0 25px #00ff9c22;
+}
+
+.section h3 {
+  color: #00ff9c;
+}
+
+/* GRID BASE */
+.grid {
+  display: grid;
+  gap: 20px;
+}
+
+/* ROLES: 2 PER ROW */
+.roles-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* TOPICS: 2 PER ROW */
+.topics-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .roles-grid,
+  .topics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CARD */
+.card {
+  background: #0a1411;
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #00ff9c33;
+  transition: 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px #00ff9c55;
+}
+
+.card h4 {
+  color: #00ff9c;
+}
+
+.card button {
+  margin-top: 10px;
+  background: #00ff9c;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* TOPIC LAYOUT */
+.topic-layout {
+  display: flex;
+  gap: 20px;
+}
+
+/* CALENDAR */
+.calendar-box {
+  flex: 1;
+  background: #0a1411;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.calendar-day {
+  margin: 8px 0;
+  font-size: 0.9em;
+}
+
+/* TODOS */
+.todo-box {
+  flex: 2;
+  background: #0a1411;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #00ff9c22;
+}
+
+.todo-item button {
+  background: #00ff9c;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* BACK BUTTON */
+.back-btn {
+  margin-bottom: 10px;
+  background: none;
+  border: 1px solid #00ff9c;
+  color: #00ff9c;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #d41a1a;
+}
+
+.highlight {
+  border: 2px solid #4caf50;
+  background: #087425;
+}
+
+.done-btn {
+  padding: 6px 12px;
+  border: none;
+  background: #4caf50;
+  color: rgb(153, 12, 12);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.progress-container {
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #c05858;
+  border-radius: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4caf50;
+  transition: width 0.3s ease;
+}
+
+.empty {
+  color: gray;
+  text-align: center;
+}
