@@ -53,3 +53,5 @@ yarn-debug.log*
 yarn-error.log*
 
 
+celerybeat-schedule
+celerybeat-schedule.*
