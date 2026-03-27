@@ -15,6 +15,9 @@ sentence-transformers = "*"
 python-dotenv = "*"
 django-filter = "*"
 django = "*"
+celery = "*"
+redis = "*"
+django-celery-beat = "*"
 
 [dev-packages]
 

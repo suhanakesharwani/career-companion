@@ -60,12 +60,11 @@ class JobApplicationViewSet(viewsets.ModelViewSet): #automatically has get post 
     ordering_fields=[
         'created_at',
         'company_name',
-        'job_title',
         'status'
     ]
     ordering = ['-created_at'] 
 
-    search_fields=["company","staus","job_title"]
+    search_fields=["company","status"]
 
     def get_queryset(self):
         user = self.request.user
