@@ -1,7 +1,7 @@
-# # urls.py
-# from django.urls import path
-# from .views import voice_interview
+from django.urls import path
+from .views import GenerateQuestionAPIView, EvaluateAnswerAPIView
 
-# urlpatterns = [
-#     path("voice-interview/", voice_interview),
-# ]
+urlpatterns = [
+    path("question/", GenerateQuestionAPIView.as_view()),
+    path("evaluate/", EvaluateAnswerAPIView.as_view()),
+]

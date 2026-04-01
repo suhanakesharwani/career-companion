@@ -1,72 +1,41 @@
-# from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
-# # Create your views here.
-# import whisper
-# import librosa
-# import numpy as np
-# from rest_framework.decorators import api_view
-# from rest_framework.response import Response
-# import tempfile
-# import openai
+from .services.huggingface_service import generate_ai_response
+from .prompts.interview_prompts import (
+    interview_question_prompt,
+    evaluate_answer_prompt
+)
 
-# model = whisper.load_model("base")
 
-# @api_view(["POST"])
-# def voice_interview(request):
-#     audio_file = request.FILES.get("audio")
+class GenerateQuestionAPIView(APIView):
 
-#     # Save temp file
-#     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp:
-#         for chunk in audio_file.chunks():
-#             temp.write(chunk)
-#         temp_path = temp.name
+    permission_classes = [IsAuthenticated]
 
-#     # 🎧 STEP 1: Speech → Text
-#     result = model.transcribe(temp_path)
-#     text = result["text"]
+    def post(self, request):
 
-#     # 🎵 STEP 2: Tone Analysis
-#     y, sr = librosa.load(temp_path)
+        role = request.data.get("role")
+        level = request.data.get("level")
 
-#     duration = librosa.get_duration(y=y, sr=sr)
-#     tempo = librosa.beat.tempo(y=y, sr=sr)[0]
+        prompt = interview_question_prompt(role, level)
 
-#     energy = np.mean(librosa.feature.rms(y=y))
+        question = generate_ai_response(prompt)
 
-#     # Simple heuristics
-#     tone = "Confident"
-#     if energy < 0.02:
-#         tone = "Low energy / nervous"
-#     elif tempo < 60:
-#         tone = "Too slow"
-#     elif tempo > 140:
-#         tone = "Too fast"
+        return Response({"question": question})
 
-#     # 🤖 STEP 3: AI Evaluation
-#     prompt = f"""
-#     Evaluate this interview answer:
 
-#     "{text}"
+class EvaluateAnswerAPIView(APIView):
 
-#     Give:
-#     - score (1-10)
-#     - strengths
-#     - weaknesses
-#     - improved answer
-#     """
+    permission_classes = [IsAuthenticated]
 
-#     response = openai.ChatCompletion.create(
-#         model="gpt-4o-mini",
-#         messages=[{"role": "user", "content": prompt}]
-#     )
+    def post(self, request):
 
-#     ai_feedback = response.choices[0].message["content"]
+        question = request.data.get("question")
+        answer = request.data.get("answer")
 
-#     return Response({
-#         "transcript": text,
-#         "tone": tone,
-#         "duration": round(duration, 2),
-#         "tempo": round(float(tempo), 2),
-#         "energy": float(energy),
-#         "ai_feedback": ai_feedback
-#     })
+        prompt = evaluate_answer_prompt(question, answer)
+
+        feedback = generate_ai_response(prompt)
+
+        return Response({"feedback": feedback})

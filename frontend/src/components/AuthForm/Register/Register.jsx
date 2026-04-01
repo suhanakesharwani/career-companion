@@ -119,17 +119,31 @@ export default function Register() {
     username: "",
     email: "",
     password: "",
+    confirmPassword:""
   });
 
-  const [msg, setMsg] = useState("");
+;
   const navigate = useNavigate();
+  const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (form.password !== form.confirmPassword) {
+      setMsg("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+    setMsg("");
+
     try {
+
+
       await register(form.username, form.email, form.password);
       setMsg("Registered successfully!");
       setTimeout(() => navigate("/login"), 1500);
@@ -142,6 +156,9 @@ export default function Register() {
       } else {
         setMsg("Server not reachable.");
       }
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -183,7 +200,17 @@ export default function Register() {
               autoComplete="new-password"
             />
 
-            <button type="submit" className="register-btn">
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+
+
+            <button type="submit" className="register-btn" disabled={loading}>
               Register
             </button>
 

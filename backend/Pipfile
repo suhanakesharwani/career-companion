@@ -22,6 +22,8 @@ openai-whisper = "*"
 librosa = "*"
 soundfile = "*"
 numpy = "*"
+google-generativeai = "*"
+openai = "*"
 
 [dev-packages]
 

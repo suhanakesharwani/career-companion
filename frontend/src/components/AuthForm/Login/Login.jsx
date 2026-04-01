@@ -146,7 +146,7 @@ const style = `
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
+  const [form, setForm] = useState({ email: "", password: ""});
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -155,10 +155,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (form.password !== form.confirmPassword) {
-      setMsg("Passwords do not match!");
-      return;
-    }
+   
 
     setLoading(true);
     setMsg("");
@@ -169,6 +166,7 @@ export default function Login() {
 
       setTimeout(() => navigate("/home"), 100);
     } catch (err) {
+      console.log(err.response);
       setMsg("Login failed.");
     } finally {
       setLoading(false);
@@ -202,14 +200,7 @@ export default function Login() {
               onChange={handleChange}
               autoComplete="new-password"
             />
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              autoComplete="new-password"
-            />
+           
 
             <button type="submit" className="login-btn" disabled={loading}>
               Login

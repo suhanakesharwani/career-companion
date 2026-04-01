@@ -38,7 +38,7 @@ urlpatterns = [
     path("interview-prep/", include("interview_prep.urls")),
     # path('api/auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    # path('/ai-interview',include('ai_interview.urls'))
+    path('ai-interview/',include('ai_interview.urls'))
 ] 
 
 if settings.DEBUG==True:
