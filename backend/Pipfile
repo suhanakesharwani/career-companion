@@ -18,6 +18,10 @@ django = "*"
 celery = "*"
 redis = "*"
 django-celery-beat = "*"
+openai-whisper = "*"
+librosa = "*"
+soundfile = "*"
+numpy = "*"
 
 [dev-packages]
 

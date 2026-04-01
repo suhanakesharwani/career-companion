@@ -51,7 +51,7 @@ INTERNAL_IPS = [
 ]
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=BASE_DIR/"media"
@@ -80,16 +80,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",        # first
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # usually last
 ]
 
 ROOT_URLCONF = 'server.urls'
@@ -130,11 +129,7 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
 
@@ -176,9 +171,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 REST_FRAMEWORK={
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "accounts.authentication.CsrfExemptSessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'accounts.authentication.CookieJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -189,24 +183,46 @@ REST_FRAMEWORK={
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
     ],
-    
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.AnonRateThrottle",
+    ],
 
+    "DEFAULT_THROTTLE_RATES": {
+        "user": "100/min",
+        "anon": "10/min",
+    },
 }
 from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
+
+    'AUTH_COOKIE': 'access_token',
+    'AUTH_COOKIE_SECURE': False,    # HTTP is fine in dev
+    'AUTH_COOKIE_HTTP_ONLY': True,
+    'AUTH_COOKIE_PATH': '/',
+    'AUTH_COOKIE_SAMESITE': 'Lax',   # None allows cross-origin cookies
+    'AUTH_COOKIE_DOMAIN': 'localhost',     # allow both localhost & 127.0.0.1
 }
 
 CORS_ALLOWED_ORIGINS = [
+  
+    "http://127.0.0.1:3000",
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-]
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = False
+SESSION_COOKIE_SECURE = False   # True in production
+CSRF_COOKIE_SECURE = False
+
+
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'landing'
@@ -224,3 +240,5 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+
+PASSWORD_RESET_TIMEOUT = 1800

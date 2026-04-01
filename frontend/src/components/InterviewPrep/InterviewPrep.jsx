@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const API = "http://127.0.0.1:8000/interview-prep";
 
@@ -334,9 +335,7 @@ function WeeklyBar({ calendar }) {
    MAIN COMPONENT
 ───────────────────────────────────────────── */
 export default function InterviewPrep() {
-  const token = localStorage.getItem("token");
-  const headers = { Authorization: `Bearer ${token}` };
-
+  
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState(null);
 
@@ -352,7 +351,7 @@ export default function InterviewPrep() {
   /* FETCH ROLES — merge API data with guaranteed Data Scientist card */
   const fetchRoles = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/roles/`, { headers });
+      const res = await axios.get(`${API}/roles/`);
       const apiRoles = res.data;
       // Ensure Data Scientist is always present
       const hasDS = apiRoles.some(r => r.name.toLowerCase().includes("data scientist"));
@@ -366,7 +365,7 @@ export default function InterviewPrep() {
   /* FETCH CALENDAR */
   const fetchCalendar = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/calendar/`, { headers });
+      const res = await axios.get(`${API}/calendar/`);
       setCalendar(res.data);
     } catch (err) { console.error(err); }
   }, []);
@@ -381,11 +380,11 @@ export default function InterviewPrep() {
     setSelectedTopicIdx(null);
     setLoading(true);
     try {
-      const topicsRes = await axios.get(`${API}/roles/${role.id}/topics/`, { headers });
+      const topicsRes = await axios.get(`${API}/roles/${role.id}/topics/`);
       const topics = topicsRes.data;
       // Fetch todos for every topic in parallel
       const allTodos = await Promise.all(
-        topics.map(t => axios.get(`${API}/topics/${t.id}/todos/`, { headers }).then(r => r.data))
+        topics.map(t => axios.get(`${API}/topics/${t.id}/todos/`).then(r => r.data))
       );
       setTopicsData(topics.map((t, i) => ({ topic: t, todos: allTodos[i] || [] })));
       setTimeout(() => dashRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
@@ -454,7 +453,7 @@ export default function InterviewPrep() {
     if (newState) {
       // Completing → call API
       try {
-        await axios.post(`${API}/todos/${todoId}/complete/`, {}, { headers });
+        await axios.post(`${API}/todos/${todoId}/complete/`, {});
         // Sync calendar from server to stay accurate
         fetchCalendar();
       } catch (err) {

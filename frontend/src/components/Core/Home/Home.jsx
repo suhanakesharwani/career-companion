@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
-const API = "http://127.0.0.1:8000";
+import API from "../../../services/auth";
 
 const style = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap');
@@ -466,12 +466,12 @@ const tools = [
   },
   {
     num: "02",
-    icon: "🔍",
-    title: "Resume Analyzer",
-    desc: "Get ATS feedback, structure insights, and actionable improvements to stand out to recruiters.",
-    btn: "Analyze Resume",
-    route: null,
-    status: "In progress",
+    icon: "🤖",
+    title: "Ai-Interview",
+    desc: "Practice interviews, get AI-powered feedback on your responses, and receive actionable insights to improve confidence, clarity, and performance.",
+    btn: "Interview With Ai",
+    route: "/ai-interview",
+    status: "null",
   },
   {
     num: "03",
@@ -505,13 +505,19 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) { navigate("/login"); return; }
-    axios
-      .get(`${API}/home/`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((res) => setMessage(res.data.message))
-      .catch(() => navigate("/login"));
+    const checkAuth = async () => {
+      try {
+        const res = await API.get("me/");   // ✅ hits /accounts/me/
+        setMessage(`Welcome back, ${res.data.username}`);
+      } catch (err) {
+        // console.log("NOT AUTHENTICATED", err.response);
+        navigate("/login");
+      }
+    };
+
+    checkAuth();
   }, [navigate]);
+
 
   return (
     <>

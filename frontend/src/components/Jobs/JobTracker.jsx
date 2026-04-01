@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import React from "react";
+axios.defaults.withCredentials = true;
 
 const API = "http://127.0.0.1:8000";
 
@@ -268,7 +269,10 @@ const style = `
     .jt-container { padding: 0 16px 60px; }
     .jt-field-row { grid-template-columns: 1fr; }
   }
+    
 `;
+
+
 
 const FormFields = React.memo(function FormFields({ values, onChange, isEdit = false }) {
   return (
@@ -330,8 +334,9 @@ function formatDate(d) {
 }
 
 export default function JobTracker() {
+  
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  
 
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -341,19 +346,16 @@ export default function JobTracker() {
   const [filterStatus, setFilterStatus] = useState("all");
   const [form, setForm] = useState({ ...EMPTY_FORM });
 
-  useEffect(() => { if (!token) navigate("/login"); }, [token, navigate]);
-
+  
   const fetchJobs = useCallback(async () => {
-    if (!token) return;
+   
     setLoading(true);
     try {
-      const res = await axios.get(`${API}/application-tracker/job-application/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(`${API}/application-tracker/job-application/`, );
       setJobs(Array.isArray(res.data) ? res.data : res.data.results || []);
     } catch { setJobs([]); }
     setLoading(false);
-  }, [token]);
+  }, []);
 
   useEffect(() => { fetchJobs(); }, [fetchJobs]);
 
@@ -372,9 +374,7 @@ export default function JobTracker() {
     const payload = { ...form };
     if (!payload.date_applied) delete payload.date_applied;
     if (!payload.deadline) delete payload.deadline;
-    await axios.post(`${API}/application-tracker/job-application/`, payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.post(`${API}/application-tracker/job-application/`, payload);
     setForm({ ...EMPTY_FORM });
     fetchJobs();
   };
@@ -389,9 +389,7 @@ export default function JobTracker() {
     const payload = { ...editForm };
     if (!payload.date_applied) delete payload.date_applied;
     if (!payload.deadline) delete payload.deadline;
-    await axios.patch(`${API}/application-tracker/job-application/${editingJob}/`, payload, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.patch(`${API}/application-tracker/job-application/${editingJob}/`, payload);
     setEditingJob(null);
     fetchJobs();
   };

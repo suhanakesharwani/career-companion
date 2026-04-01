@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { login } from "../../../services/auth";
 
 const style = `
@@ -15,6 +15,7 @@ const style = `
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 /* BOX */
@@ -27,6 +28,7 @@ const style = `
   padding: 36px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.4);
   animation: fadeUp 0.4s ease;
+  z-index: 1;
 }
 
 /* TITLE */
@@ -107,30 +109,69 @@ const style = `
   color: #C8FF57;
 }
 
-/* ANIMATION */
+/* LOADER OVERLAY */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 15, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.loader {
+  border: 6px solid #1E1E2C;
+  border-top: 6px solid #C8FF57;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* ANIMATIONS */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 `;
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
   const [msg, setMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (form.password !== form.confirmPassword) {
+      setMsg("Passwords do not match!");
+      return;
+    }
+
+    setLoading(true);
+    setMsg("");
+
     try {
-      await login(form.username, form.password);
-      setMsg("Login successful!");
-      navigate("/home");
+      await login(form.email, form.password);
+      setMsg("Login successful! Redirecting...");
+
+      setTimeout(() => navigate("/home"), 100);
     } catch (err) {
-      console.log(err);
-      setMsg("Login failed. Please enter correct credentials");
+      setMsg("Login failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,19 +184,16 @@ export default function Login() {
           <h2>
             Welcome <span>Back</span>
           </h2>
-          <p className="login-sub">
-            Continue your career journey
-          </p>
+          <p className="login-sub">Continue your career journey</p>
 
           <form onSubmit={handleSubmit} autoComplete="off">
             <input
-              name="username"
-              placeholder="Username"
-              value={form.username}
+              name="email"
+              placeholder="Email"
+              value={form.email}
               onChange={handleChange}
               autoComplete="off"
             />
-
             <input
               type="password"
               name="password"
@@ -164,8 +202,16 @@ export default function Login() {
               onChange={handleChange}
               autoComplete="new-password"
             />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
 
-            <button type="submit" className="login-btn">
+            <button type="submit" className="login-btn" disabled={loading}>
               Login
             </button>
 
@@ -176,10 +222,19 @@ export default function Login() {
             >
               Register Instead
             </button>
+
+            <Link to="/forgot-password">Forgot Password?</Link>
           </form>
 
           {msg && <p className="login-msg">{msg}</p>}
         </div>
+
+        {/* FULL PAGE LOADER */}
+        {loading && (
+          <div className="loader-overlay">
+            <div className="loader"></div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+axios.defaults.withCredentials = true;
 
 const style = `
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
@@ -155,12 +156,9 @@ const style = `
 `;
 
 export default function ResumeMatcher() {
+  
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    if (!token) navigate("/login");
-  }, [token, navigate]);
 
   const [resume, setResume] = useState(null);
   const [jdText, setJdText] = useState("");
@@ -182,12 +180,7 @@ export default function ResumeMatcher() {
     try {
       const res = await axios.post(
         "http://127.0.0.1:8000/matching/",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        formData
       );
 
       setResult(res.data.matching_result);

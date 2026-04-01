@@ -1,35 +1,64 @@
+from django.db import transaction
+import os
+# DRF
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
 
+# Django
+from django.db import transaction
+
+# Python
+import os
+
+# Models
 from resumes.models import Resume
 from jobs.models import JobDescription
 
+# Resume Processing
 from resumes.utils import extract_text_from_resume
+
+# Text Processing
 from common.utils import clean_text, get_skills
+# from accounts.authentication import CookieJWTAuthentication
+# AI Matching
 from .ai_utils import semantic_skill_match
-
-
 class UploadAndMatchAPIView(APIView):
-    
+
     permission_classes = [IsAuthenticated]
+
+    # @authentication_classes([CookieJWTAuthentication])
     parser_classes = [MultiPartParser, FormParser]
 
+    @transaction.atomic
     def post(self, request):
+
         resume_file = request.FILES.get("resume")
         jd_text = request.data.get("jd_text")
 
         if not resume_file or not jd_text:
-            return Response(
-                {"error": "Resume file and JD text are required"},
-                status=400
-            )
+            return Response({"error": "Resume and JD required"}, status=400)
+
+        # -------- File validation --------
+        ALLOWED_TYPES = [
+            "application/pdf",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        ]
+
+        if resume_file.content_type not in ALLOWED_TYPES:
+            return Response({"error": "Invalid file type"}, status=400)
 
         if resume_file.size > 5 * 1024 * 1024:
             return Response({"error": "File too large"}, status=400)
 
-        # Save resume
+        resume_file.name = os.path.basename(resume_file.name)
+
+        # -------- JD validation --------
+        if len(jd_text) > 10000:
+            return Response({"error": "JD too large"}, status=400)
+
+        # -------- Save Resume --------
         resume = Resume.objects.create(
             user=request.user,
             file=resume_file
@@ -44,7 +73,7 @@ class UploadAndMatchAPIView(APIView):
         resume.skills = resume_skills
         resume.save()
 
-        # Save JD
+        # -------- Save JD --------
         cleaned_jd = clean_text(jd_text)
         jd_skills = get_skills(cleaned_jd)
 
@@ -55,7 +84,7 @@ class UploadAndMatchAPIView(APIView):
             skills=jd_skills
         )
 
-        #  AI-based semantic matching
+        # -------- AI Matching --------
         matching_result = semantic_skill_match(
             jd_skills=list(jd_skills),
             resume_skills=list(resume_skills)
@@ -68,142 +97,3 @@ class UploadAndMatchAPIView(APIView):
             "resume_id": resume.id,
             "job_id": job.id
         })
-
-
-# from django.shortcuts import render,redirect
-# from django.http import HttpResponse
-# from django.contrib.auth.decorators import login_required
-
-# from resumes.models import Resume
-# from jobs.models import JobDescription
-# from resumes.utils import extract_text_from_resume
-# from common.utils import clean_text,get_skills
-
-# from .utils import calculate_matching_result
-
-# # Create your views here.
-
-# # contains upload input and output operations only
-
-
-# # views.py
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework.permissions import IsAuthenticated
-# from rest_framework.parsers import MultiPartParser, FormParser
-# from .models import Resume, JobDescription
-# from resumes.utils import extract_text_from_resume
-# from .utils import calculate_matching_result
-# from common.utils import clean_text,get_skills
-# from .ai_utils import semantic_skill_match
-
-# class UploadAndMatchAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     parser_classes = [MultiPartParser, FormParser]  # handle file uploads
-
-#     def post(self, request, format=None):
-#         # Get file and JD text
-#         resume_file = request.FILES.get("resume")
-#         jd_text = request.data.get("jd_text")
-
-#         if not resume_file or not jd_text:
-#             return Response({"error": "Resume file and JD text are required"}, status=400)
-
-#         if resume_file.size > 5 * 1024 * 1024:
-#             return Response({"error": "File too large"}, status=400)
-
-#         # Save resume
-#         resume = Resume.objects.create(user=request.user, file=resume_file)
-
-#         # Extract skills
-#         raw_text = extract_text_from_resume(resume.file.path)
-#         cleaned = clean_text(raw_text)
-#         resume_skills = get_skills(cleaned)
-
-#         resume.parsed_text = raw_text
-#         resume.cleaned_text = cleaned
-#         resume.skills = resume_skills
-#         resume.save()
-
-#         # Save job description
-#         cleaned_jd_text = clean_text(jd_text)
-#         jd_skills = get_skills(cleaned_jd_text)
-
-#         job = JobDescription.objects.create(
-#             user=request.user,
-#             jd_text=jd_text,
-#             cleaned_text=cleaned_jd_text,
-#             skills=jd_skills
-#         )
-
-#         # Calculate matching
-#         matching_result = calculate_matching_result(set(jd_skills), set(resume_skills))
-
-#         # Return JSON response
-#         return Response({
-#             "resume_skills": list(resume_skills),
-#             "jd_skills": list(jd_skills),
-#             "matching_result": matching_result,
-#             "resume_id": resume.id,
-#             "job_id": job.id
-#         })
-# # @login_required(login_url='/accounts/login/')
-# # def upload_and_match(request):
-# #     if request.method=="POST":
-
-# #         resume_file=request.FILES["resume"]
-# #         if resume_file.size > 5 * 1024 * 1024: 
-# #             return HttpResponse("File too large!", status=400)
-# #         jd_text=request.POST.get("jd_text")
-
-# #         resume=Resume.objects.create(
-# #             user=request.user,
-# #             file=resume_file
-# #         )
-
-# #         raw_text=extract_text_from_resume(resume.file.path)
-# #         cleaned=clean_text(raw_text)
-# #         resume_skills=get_skills(cleaned)
-
-# #         resume.parsed_text=raw_text
-# #         resume.cleaned_text=cleaned
-# #         resume.skills=resume_skills
-
-
-# #         # resume_skills=set(resume.skills)
-
-# #         resume.save()
-
-# #         #save jd
-
-# #         cleaned_jd_text = clean_text(jd_text)
-# #         jd_skills = get_skills(cleaned_jd_text)
-
-
-# #         job=JobDescription.objects.create(
-# #             user=request.user,
-# #             jd_text=jd_text,
-# #             cleaned_text=cleaned_jd_text,
-# #             skills=jd_skills
-# #         )
-
-# #         matching_result=calculate_matching_result(set(jd_skills),set(resume_skills))
-
-# #         print("RESUME SKILLS:", resume_skills)
-# #         print("JD SKILLS:", jd_skills)
-# #         print("MATCHING RESULT:", matching_result)
-
-
-        
-# #         return render(request,"matching/result.html",{
-# #             "resume":resume,
-# #             "job":job,
-# #             "result":matching_result
-# #         })
-    
-# #     return render(request,"matching/upload.html")
-
-
-
-
-

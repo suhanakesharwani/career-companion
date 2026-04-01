@@ -16,6 +16,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from accounts.authentication import CookieJWTAuthentication
+
 
 
 # @login_required(login_url='/accounts/login/')
@@ -25,21 +27,22 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class JobListView(APIView):
     permission_classes=[IsAuthenticated]
+    
     def get(self,request):
         jobs = JobApplication.objects.all().order_by('-posted_at')  # get all jobs
         serializer = JobApplicationSerializer(jobs, many=True)
         return Response(serializer.data)
 
-def upload_jd(request):
-    if request.method=="POST":
-        raw_text=request.te
+    def upload_jd(request):
+        if request.method=="POST":
+            raw_text=request.te
+            
+            cleaned=clean_text(raw_text)
+
+
+            return redirect("dashboard")
         
-        cleaned=clean_text(raw_text)
-
-
-        return redirect("dashboard")
-    
-    return render(request,"resume/upload.html")
+        return render(request,"resume/upload.html")
 
 
 class IsOwnerOrAdmin(BasePermission):
@@ -47,8 +50,7 @@ class IsOwnerOrAdmin(BasePermission):
         return request.user.is_staff or obj.user==request.user
 
 class JobApplicationViewSet(viewsets.ModelViewSet): #automatically has get post put patch
-
-    authentication_classes = [JWTAuthentication] 
+    authentication_classes = [CookieJWTAuthentication]
     permission_classes=[IsAuthenticated]
     serializer_class=JobApplicationSerializer
     paginator = PageNumberPagination()

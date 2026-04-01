@@ -238,8 +238,8 @@ export default function Landing() {
             </div>
 
             <div className="card">
-              <h3>Career Guidance</h3>
-              <p>AI-powered recommendations based on your goals.</p>
+              <h3>Ai Powered Interviews</h3>
+              <p>Practice interviews and get AI-powered feedback.</p>
             </div>
           </section>
 
