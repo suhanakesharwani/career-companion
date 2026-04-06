@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import GenerateQuestionAPIView, EvaluateAnswerAPIView
+from . import views
 
 urlpatterns = [
-    path("question/", GenerateQuestionAPIView.as_view()),
-    path("evaluate/", EvaluateAnswerAPIView.as_view()),
+    path('question/', views.get_ai_question),
+    path('evaluate/', views.evaluate_ai_answer),
 ]

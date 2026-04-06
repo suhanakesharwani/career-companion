@@ -24,6 +24,10 @@ soundfile = "*"
 numpy = "*"
 google-generativeai = "*"
 openai = "*"
+channels-redis = "*"
+channels = "*"
+channels-auth-token-middlewares = "*"
+django-ratelimit = "*"
 
 [dev-packages]
 

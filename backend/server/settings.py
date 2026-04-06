@@ -44,7 +44,8 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 HF_MODEL=os.getenv("HF_MODEL")
-HF_API_KEY = os.getenv("HF_API_KEY")
+
+GROQ_API_KEY = os.getenv("GROQ_API_KEY").strip()
 
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -59,6 +60,7 @@ MEDIA_ROOT=BASE_DIR/"media"
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'rest_framework',
@@ -72,6 +74,8 @@ INSTALLED_APPS = [
     'jobs',
     'matching',
     'accounts',
+    'channels',
+    'ai_interview',
     'interview_prep',
     'debug_toolbar',
     'django.contrib.contenttypes',
@@ -243,3 +247,15 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 
 PASSWORD_RESET_TIMEOUT = 1800
+
+
+ASGI_APPLICATION = "server.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")]
+        },
+    },
+}

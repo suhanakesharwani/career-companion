@@ -1,41 +1,38 @@
-from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from .services.ai_service import generate_question, evaluate_answer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+from django_ratelimit.decorators import ratelimit
 
-from .services.huggingface_service import generate_ai_response
-from .prompts.interview_prompts import (
-    interview_question_prompt,
-    evaluate_answer_prompt
-)
+@ratelimit(key='user',rate='10/m',block=True)
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_ai_question(request):
 
-
-class GenerateQuestionAPIView(APIView):
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-
-        role = request.data.get("role")
-        level = request.data.get("level")
-
-        prompt = interview_question_prompt(role, level)
-
-        question = generate_ai_response(prompt)
-
-        return Response({"question": question})
+    role = request.GET.get("role")
+    level = request.GET.get("level")
+    question_text = generate_question(role, level)
+    return Response({"question": question_text})
 
 
-class EvaluateAnswerAPIView(APIView):
 
-    permission_classes = [IsAuthenticated]
+def clean_text(text):
+    if not text:
+        return ""
 
-    def post(self, request):
+    text=text.strip()
+    if len(text)>1000:
+        raise ValueError("Too Long")
+    return text
 
-        question = request.data.get("question")
-        answer = request.data.get("answer")
 
-        prompt = evaluate_answer_prompt(question, answer)
-
-        feedback = generate_ai_response(prompt)
-
-        return Response({"feedback": feedback})
+@ratelimit(key='user',rate='10/m',block=True)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def evaluate_ai_answer(request):
+    #validate the answer and question 
+    question = clean_text(request.data.get("question"))
+    answer = clean_text(request.data.get("answer"))
+    feedback = evaluate_answer(question, answer)
+    return Response({"feedback": feedback})
