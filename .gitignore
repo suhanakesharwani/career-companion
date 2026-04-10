@@ -55,3 +55,9 @@ yarn-error.log*
 
 celerybeat-schedule
 celerybeat-schedule.*
+
+docker.env
+settings_prod.py
+produc
+secrets.json
+nginx.conf
