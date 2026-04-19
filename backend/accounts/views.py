@@ -121,7 +121,7 @@ class ForgotPasswordView(APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = token_generator.make_token(user)
 
-            reset_link = f"http://127.0.0.1:3000/reset-password/{uid}/{token}/"
+            reset_link = f"https://career-companion-l6kw.onrender.com/reset-password/{uid}/{token}/"
 
             send_mail(
                 subject="Reset Your Password",

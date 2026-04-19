@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 
-const API = "http://127.0.0.1:8000/interview-prep";
+const API = "https://career-companion-backend-uhlf.onrender.com/interview-prep";
 
 const roleIcons = ["⚙️", "🧠", "🖥️", "📐", "🔬", "🎯", "🛠️", "🚀"];
 const topicGradients = [

@@ -45,10 +45,10 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY").strip()
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-    "localhost",
-]
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]
+else:
+    INTERNAL_IPS = []
 
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")  
@@ -213,18 +213,18 @@ REST_FRAMEWORK={
     },
 }
 from datetime import timedelta
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 
     'AUTH_COOKIE': 'access_token',
-    'AUTH_COOKIE_SECURE': False,    # HTTP is fine in dev
+    'AUTH_COOKIE_SECURE': True,        # MUST be True on HTTPS (Render)
     'AUTH_COOKIE_HTTP_ONLY': True,
     'AUTH_COOKIE_PATH': '/',
-    'AUTH_COOKIE_SAMESITE': 'Lax',   # None allows cross-origin cookies
-    'AUTH_COOKIE_DOMAIN': 'localhost',     # allow both localhost & 127.0.0.1
+    'AUTH_COOKIE_SAMESITE': 'None',    # REQUIRED for cross-origin (React + Django)
+    'AUTH_COOKIE_DOMAIN': None,        # IMPORTANT: let browser handle domain
 }
-
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
   
