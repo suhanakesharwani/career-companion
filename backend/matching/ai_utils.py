@@ -1,13 +1,26 @@
 # matching/ai_utils.py
 
+import re
+
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+
 import numpy as np
 
+
+_model=None
 # lightweight + free
-model = SentenceTransformer("all-MiniLM-L6-v2")
+# model = SentenceTransformer("all-MiniLM-L6-v2")
+
+def get_modle():
+    global _model
+    if _model is None:
+        _model = SentenceTransformer("all-MiniLM-L6-v2")
+    return _model
 
 def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
+
+    model=get_modle()
     """
     jd_skills: list[str]
     resume_skills: list[str]

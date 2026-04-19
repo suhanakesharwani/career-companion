@@ -1,9 +1,12 @@
 import requests
 from django.conf import settings
-
+import os
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+API_KEY = os.getenv("GROQ_API_KEY")
+
 HEADERS = {
-    "Authorization": f"Bearer {settings.GROQ_API_KEY}",  # remove spaces
+     "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json",
 }
 
