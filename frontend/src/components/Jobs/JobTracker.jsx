@@ -139,6 +139,8 @@ const style = `
   .jt-field select option { background: #111; }
   .jt-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
+  .jt-field-row > .jt-field { min-width: 0; }
+
   .jt-submit {
     width: 100%; margin-top: 8px;
     background: var(--accent); color: #0A0A0F;
