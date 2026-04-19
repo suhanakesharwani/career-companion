@@ -197,6 +197,7 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 REST_FRAMEWORK={
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'accounts.authentication.CookieJWTAuthentication',
+        'rest_framework.authentication.RequestConditionAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -251,9 +252,9 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
 
-SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = "None"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
