@@ -227,18 +227,20 @@ SIMPLE_JWT = {
 }
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-  
+    "http://localhost:3000",
+    "http://localhost:5173",
     "https://career-companion-l6kw.onrender.com",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "https://career-companion-l6kw.onrender.com",
+    "https://career-companion-backend-uhlf.onrender.com",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SECURE = False   # True in production
-CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
+SESSION_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_SAMESITE = "None"
 
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
