@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
 
 import API from "../../../services/auth";
 
@@ -30,7 +29,6 @@ const style = `
     overflow-x: hidden;
   }
 
-  /* ── BACKGROUND GRID ── */
   .home-root::before {
     content: '';
     position: fixed;
@@ -43,7 +41,6 @@ const style = `
     z-index: 0;
   }
 
-  /* ── GRAIN OVERLAY ── */
   .home-root::after {
     content: '';
     position: fixed;
@@ -411,6 +408,370 @@ const style = `
     opacity: 0.6;
   }
 
+  /* ── HOW IT WORKS ── */
+  .home-how {
+    padding: 56px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    position: relative;
+  }
+  .home-steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: calc(12.5% + 12px);
+    right: calc(12.5% + 12px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, rgba(200,255,87,0.15) 100%);
+    z-index: 0;
+  }
+  .home-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease both;
+  }
+  .home-step:nth-child(1) { animation-delay: 0.05s; }
+  .home-step:nth-child(2) { animation-delay: 0.12s; }
+  .home-step:nth-child(3) { animation-delay: 0.19s; }
+  .home-step:nth-child(4) { animation-delay: 0.26s; }
+  .home-step-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    margin-bottom: 20px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .home-step:hover .home-step-circle {
+    border-color: var(--accent);
+    background: rgba(200,255,87,0.08);
+  }
+  .home-step h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .home-step p {
+    font-size: 0.8rem;
+    color: #555;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── METRICS ROW ── */
+  .home-metrics {
+    padding: 56px 48px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 0;
+  }
+  .home-metric-cell {
+    background: var(--surface);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+  .home-metric-cell:first-child { border-radius: 0; }
+  .home-metric-cell:hover { background: #13131C; }
+  .home-metric-big {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .home-metric-label {
+    font-size: 0.8rem;
+    color: #555;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .home-metric-sub {
+    font-size: 0.7rem;
+    color: #333;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-family: 'Syne', sans-serif;
+    margin-top: 4px;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .home-testimonials {
+    padding: 56px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .home-testi-card {
+    background: var(--surface);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeUp 0.5s ease both;
+    transition: background 0.2s;
+  }
+  .home-testi-card:nth-child(1) { animation-delay: 0.05s; border-radius: 22px 0 0 22px; }
+  .home-testi-card:nth-child(2) { animation-delay: 0.12s; }
+  .home-testi-card:nth-child(3) { animation-delay: 0.19s; border-radius: 0 22px 22px 0; }
+  .home-testi-card:hover { background: #13131C; }
+  .home-testi-quote {
+    font-size: 1.4rem;
+    color: var(--accent);
+    opacity: 0.4;
+    font-family: 'Syne', sans-serif;
+    line-height: 1;
+  }
+  .home-testi-text {
+    font-size: 0.88rem;
+    color: #888;
+    line-height: 1.7;
+    font-weight: 300;
+    font-style: italic;
+    flex: 1;
+  }
+  .home-testi-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+  .home-testi-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--faint);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .home-testi-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .home-testi-role {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* ── TIPS SECTION ── */
+  .home-tips {
+    padding: 56px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .home-tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .home-tip-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    background: var(--surface);
+    transition: border-color 0.2s, background 0.2s;
+    animation: fadeUp 0.5s ease both;
+  }
+  .home-tip-card:nth-child(1) { animation-delay: 0.05s; }
+  .home-tip-card:nth-child(2) { animation-delay: 0.10s; }
+  .home-tip-card:nth-child(3) { animation-delay: 0.15s; }
+  .home-tip-card:hover {
+    border-color: rgba(200,255,87,0.3);
+    background: #13131C;
+  }
+  .home-tip-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(200,255,87,0.07);
+    border: 1px solid rgba(200,255,87,0.15);
+    border-radius: 100px;
+    padding: 4px 10px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-family: 'Syne', sans-serif;
+  }
+  .home-tip-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .home-tip-card p {
+    font-size: 0.82rem;
+    color: #555;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ── CTA BANNER ── */
+  .home-cta {
+    margin: 0 48px 56px;
+    border: 1px solid rgba(200,255,87,0.2);
+    border-radius: 20px;
+    padding: 52px 48px;
+    background: rgba(200,255,87,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .home-cta::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,255,87,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .home-cta-left h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+  .home-cta-left h2 span { color: var(--accent); }
+  .home-cta-left p {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 300;
+    max-width: 380px;
+    line-height: 1.6;
+  }
+  .home-cta-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── PROGRESS CHECKLIST ── */
+  .home-checklist {
+    padding: 56px 48px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .home-checklist-left h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .home-checklist-left h2 span { color: var(--accent); }
+  .home-checklist-left p {
+    font-size: 0.88rem;
+    color: #555;
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .home-checklist-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .home-check-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    color: #666;
+    font-weight: 300;
+    transition: background 0.15s, color 0.15s;
+  }
+  .home-check-item:last-child { border-bottom: none; }
+  .home-check-item:hover { background: var(--faint); color: var(--text); }
+  .home-check-box {
+    width: 20px; height: 20px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .home-check-box.done {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .home-check-box.done::after {
+    content: '✓';
+    font-size: 0.65rem;
+    color: #0A0A0F;
+    font-weight: 700;
+  }
+  .home-check-label { flex: 1; }
+  .home-check-tag {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
   /* ── FOOTER ── */
   .home-footer {
     padding: 32px 48px;
@@ -437,11 +798,23 @@ const style = `
   .home-topbar { animation: fadeUp 0.4s ease both; }
 
   /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .home-steps { grid-template-columns: repeat(2, 1fr); }
+    .home-steps::before { display: none; }
+    .home-metrics { grid-template-columns: repeat(2, 1fr); }
+    .home-tips-grid { grid-template-columns: 1fr 1fr; }
+    .home-testi-grid { grid-template-columns: 1fr; }
+    .home-testi-card:nth-child(1) { border-radius: 22px 22px 0 0; }
+    .home-testi-card:nth-child(3) { border-radius: 0 0 22px 22px; }
+    .home-checklist { grid-template-columns: 1fr; gap: 24px; }
+  }
   @media (max-width: 768px) {
-    .home-topbar, .home-hero, .home-tools, .home-strip, .home-footer {
+    .home-topbar, .home-hero, .home-tools, .home-strip, .home-footer,
+    .home-how, .home-testimonials, .home-tips, .home-cta, .home-checklist {
       padding-left: 20px;
       padding-right: 20px;
     }
+    .home-cta { margin-left: 20px; margin-right: 20px; flex-direction: column; }
     .home-hero { grid-template-columns: 1fr; }
     .home-hero-right { display: none; }
     .home-grid { grid-template-columns: 1fr; }
@@ -451,6 +824,10 @@ const style = `
     .home-card:nth-child(4) { border-radius: 0 0 22px 22px; }
     .home-strip-label { display: none; }
     .home-strip-item { padding: 16px 20px 16px 0; font-size: 0.8rem; }
+    .home-steps { grid-template-columns: 1fr; }
+    .home-metrics { grid-template-columns: 1fr 1fr; padding: 0; }
+    .home-tips-grid { grid-template-columns: 1fr; }
+    .home-cta-actions { flex-direction: column; width: 100%; }
   }
 `;
 
@@ -500,6 +877,99 @@ const whyItems = [
   "Stay consistent with structured prep",
 ];
 
+const steps = [
+  {
+    num: "1",
+    title: "Upload your resume",
+    desc: "Drop in your latest CV to get an instant baseline analysis.",
+  },
+  {
+    num: "2",
+    title: "Paste a job description",
+    desc: "Let the matcher identify gaps between your profile and the role.",
+  },
+  {
+    num: "3",
+    title: "Practice interviews",
+    desc: "Run AI mock sessions tailored to the specific role and company.",
+  },
+  {
+    num: "4",
+    title: "Track & land the job",
+    desc: "Monitor every application and follow-up until you get the offer.",
+  },
+];
+
+const metrics = [
+  { val: "3×", label: "faster gap identification vs manual review", sub: "Resume Matcher" },
+  { val: "94%", label: "of users felt more prepared after AI interviews", sub: "AI Interview" },
+  { val: "2 min", label: "average time to set up a new job application", sub: "Job Tracker" },
+  { val: "∞", label: "interview questions across all domains", sub: "Interview Prep" },
+];
+
+const testimonials = [
+  {
+    initials: "AK",
+    text: "The resume matcher flagged skills I'd completely forgotten to mention. Got a callback the same week I updated my CV.",
+    name: "Aryan K.",
+    role: "SWE — landed at a Series B startup",
+  },
+  {
+    initials: "PS",
+    text: "Doing five AI mock interviews before the real one was a game-changer. I went in knowing exactly where I stumbled.",
+    name: "Priya S.",
+    role: "Product Manager — hired at a FAANG",
+  },
+  {
+    initials: "MR",
+    text: "The job tracker kept me sane during a 3-month search. No more messy spreadsheets or forgotten follow-ups.",
+    name: "Marcus R.",
+    role: "Data Analyst — offer accepted",
+  },
+];
+
+const tips = [
+  {
+    tag: "Resume",
+    title: "Tailor every single application",
+    desc: "Generic resumes get filtered out fast. Use the matcher to mirror the exact language in each JD — ATS systems rank keyword density heavily.",
+  },
+  {
+    tag: "Interview",
+    title: "Use the STAR method consistently",
+    desc: "Situation, Task, Action, Result. Structure every behavioural answer this way and you'll sound confident even when improvising.",
+  },
+  {
+    tag: "Strategy",
+    title: "Apply in focused sprints",
+    desc: "Sending 50 low-effort applications wastes more time than 10 targeted ones. Use the tracker to stay focused on quality over volume.",
+  },
+  {
+    tag: "Mindset",
+    title: "Track rejections, not just wins",
+    desc: "Every rejection carries signal. Log the stage at which you dropped out — patterns reveal where to focus your prep energy.",
+  },
+  {
+    tag: "Research",
+    title: "Know the company cold",
+    desc: "Interviewers can always tell who's done homework. Research recent news, the team's mission, and product direction before any call.",
+  },
+  {
+    tag: "Follow-up",
+    title: "Send a note within 24 hours",
+    desc: "A concise thank-you email referencing a specific moment from the interview stands out. Most candidates skip it — don't be most candidates.",
+  },
+];
+
+const checklist = [
+  { label: "Resume uploaded and matched against a JD", done: false, tag: "Step 1" },
+  { label: "AI mock interview completed at least once", done: false, tag: "Step 2" },
+  { label: "First job application added to tracker", done: false, tag: "Step 3" },
+  { label: "Interview prep path selected", done: false, tag: "Step 4" },
+  { label: "Follow-up reminders set for active applications", done: false, tag: "Step 5" },
+  { label: "Weak skill areas identified and noted", done: false, tag: "Step 6" },
+];
+
 export default function Home() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -507,17 +977,14 @@ export default function Home() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await API.get("me/");   // ✅ hits /accounts/me/
+        const res = await API.get("me/");
         setMessage(`Welcome back, ${res.data.username}`);
       } catch (err) {
-        // console.log("NOT AUTHENTICATED", err.response);
         navigate("/login");
       }
     };
-
     checkAuth();
   }, [navigate]);
-
 
   return (
     <>
@@ -613,6 +1080,111 @@ export default function Home() {
                   {item}
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* HOW IT WORKS */}
+          <div className="home-how">
+            <div className="home-section-label">How it works</div>
+            <div className="home-steps">
+              {steps.map((s) => (
+                <div key={s.num} className="home-step">
+                  <div className="home-step-circle">{s.num}</div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* METRICS ROW */}
+          <div style={{ padding: "0 48px 56px", borderBottom: "1px solid var(--border)" }}>
+            <div className="home-section-label">By the numbers</div>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "2px",
+              background: "var(--border)",
+              borderRadius: "20px",
+              overflow: "hidden",
+              border: "1px solid var(--border)",
+            }}>
+              {metrics.map((m, i) => (
+                <div key={i} className="home-metric-cell">
+                  <div className="home-metric-big">{m.val}</div>
+                  <div className="home-metric-label">{m.label}</div>
+                  <div className="home-metric-sub">{m.sub}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* TESTIMONIALS */}
+          <div className="home-testimonials">
+            <div className="home-section-label">What users say</div>
+            <div className="home-testi-grid">
+              {testimonials.map((t, i) => (
+                <div key={i} className="home-testi-card">
+                  <div className="home-testi-quote">"</div>
+                  <p className="home-testi-text">{t.text}</p>
+                  <div className="home-testi-author">
+                    <div className="home-testi-avatar">{t.initials}</div>
+                    <div>
+                      <div className="home-testi-name">{t.name}</div>
+                      <div className="home-testi-role">{t.role}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* TIPS */}
+          <div className="home-tips">
+            <div className="home-section-label">Quick tips for job seekers</div>
+            <div className="home-tips-grid">
+              {tips.map((tip, i) => (
+                <div key={i} className="home-tip-card">
+                  <div className="home-tip-tag">{tip.tag}</div>
+                  <h4>{tip.title}</h4>
+                  <p>{tip.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CHECKLIST */}
+          <div className="home-checklist">
+            <div className="home-checklist-left">
+              <h2>Your <span>getting started</span> checklist</h2>
+              <p>
+                New here? Work through these six steps to get the most out of Career Companion. Each one takes less than five minutes and builds on the last.
+              </p>
+            </div>
+            <div className="home-checklist-items">
+              {checklist.map((item, i) => (
+                <div key={i} className="home-check-item">
+                  <div className={`home-check-box${item.done ? " done" : ""}`} />
+                  <span className="home-check-label">{item.label}</span>
+                  <span className="home-check-tag">{item.tag}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* CTA BANNER */}
+          <div className="home-cta">
+            <div className="home-cta-left">
+              <h2>Ready to land your <span>next role?</span></h2>
+              <p>Pick a tool and start — you're already ahead of anyone who hasn't.</p>
+            </div>
+            <div className="home-cta-actions">
+              <button className="home-btn" onClick={() => navigate("/matcher")}>
+                Match my resume →
+              </button>
+              <button className="home-btn-ghost" onClick={() => navigate("/ai-interview")}>
+                Practice an interview
+              </button>
             </div>
           </div>
 
