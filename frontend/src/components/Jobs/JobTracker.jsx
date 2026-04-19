@@ -4,7 +4,7 @@ import axios from "axios";
 import React from "react";
 axios.defaults.withCredentials = true;
 
-const API = "http://127.0.0.1:8000";
+const API = "https://career-companion-backend-uhlf.onrender.com";
 
 const STATUS_CONFIG = {
   "not applied": { label: "Not Applied", color: "#444",    bg: "#1A1A24", dot: "#555" },
