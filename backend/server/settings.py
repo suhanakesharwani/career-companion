@@ -63,12 +63,12 @@ MEDIA_ROOT=BASE_DIR/"media"
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'rest_framework',
     'rest_framework_simplejwt',
-    'corsheaders',
     'django_filters',
     'django_celery_beat',
     'resumes',
@@ -236,6 +236,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://career-companion-l6kw.onrender.com",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
     "content-type",
