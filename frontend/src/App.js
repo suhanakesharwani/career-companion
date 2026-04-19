@@ -13,7 +13,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+
 import AiInterview from "./components/AiInterview/AiInterview";
+
+import Background from "./components/Background";
+
 function App() {
   
 
@@ -21,6 +25,7 @@ function App() {
     <>
     {/* <Connect/> */}
     <Router>
+      <Background />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
