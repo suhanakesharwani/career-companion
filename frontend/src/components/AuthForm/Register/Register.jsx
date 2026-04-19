@@ -131,6 +131,7 @@ export default function Register() {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
+    console.log("SUBMIT BUTTON CLICKED");
     e.preventDefault();
 
     if (form.password !== form.confirmPassword) {

@@ -1,7 +1,7 @@
 let socket = null;
 
 export const connectSocket = (onOpen, onMessage, onClose, onError) => {
-  socket = new WebSocket("ws://127.0.0.1:8000/ws/interview/");
+  socket = new WebSocket("ws://https://career-companion-backend-uhlf.onrender.com/ws/interview/");
 
   socket.onopen = () => { if (onOpen) onOpen(); };
   socket.onmessage = (event) => { if (onMessage) onMessage(event); };

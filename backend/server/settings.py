@@ -43,7 +43,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY").strip()
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
 
 if DEBUG:
     INTERNAL_IPS = ["127.0.0.1"]
@@ -51,7 +51,12 @@ else:
     INTERNAL_IPS = []
 
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")  
+ALLOWED_HOSTS = [
+    "career-companion-backend-uhlf.onrender.com",
+    "127.0.0.1",
+    "localhost",
+]
+
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=BASE_DIR/"media"
@@ -225,12 +230,19 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SAMESITE': 'None',    # REQUIRED for cross-origin (React + Django)
     'AUTH_COOKIE_DOMAIN': None,        # IMPORTANT: let browser handle domain
 }
-# CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "https://career-companion-l6kw.onrender.com",
 ]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+]
+
 CSRF_TRUSTED_ORIGINS = [
     "https://career-companion-l6kw.onrender.com",
     "https://career-companion-backend-uhlf.onrender.com",
