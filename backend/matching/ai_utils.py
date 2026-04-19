@@ -2,8 +2,8 @@
 
 import re
 
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+
+
 
 import numpy as np
 
@@ -21,6 +21,7 @@ def get_model():
     return _model
 
 def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
+    from sklearn.metrics.pairwise import cosine_similarity
 
     model=get_model()
     """
