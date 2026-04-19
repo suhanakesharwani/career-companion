@@ -8,19 +8,21 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 
-_model=None
-# lightweight + free
-# model = SentenceTransformer("all-MiniLM-L6-v2")
+_model = None
 
-def get_modle():
+def get_model():
     global _model
     if _model is None:
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
+        try:
+            from sentence_transformers import SentenceTransformer
+            _model = SentenceTransformer("all-MiniLM-L6-v2")
+        except Exception:
+            _model = None
     return _model
 
 def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
 
-    model=get_modle()
+    model=get_model()
     """
     jd_skills: list[str]
     resume_skills: list[str]
