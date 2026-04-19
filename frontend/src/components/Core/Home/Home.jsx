@@ -8,15 +8,15 @@ const style = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #020818;
-    --surface: #0a0e1a;
-    --border: #1a2040;
+    --bg: #0A0A0F;           /* Matches Landing .landing-root */
+    --surface: #111118;      /* Matches Landing .card background */
+    --border: #1E1E2C;       /* Matches Landing .card border */
     --border-hover: #C8FF57;
     --accent: #C8FF57;
     --accent-dim: rgba(200,255,87,0.06);
     --text: #F0EEE8;
-    --muted: #4a5580;
-    --faint: #111828;
+    --muted: #777777;        /* Matches Landing .card p color */
+    --faint: #0D0D14;
   }
 
   .home-root {
@@ -53,8 +53,9 @@ const style = `
     padding: 28px 48px;
     border-bottom: 1px solid var(--border);
     backdrop-filter: blur(12px);
-    background: rgba(2,8,24,0.6);
+    background: rgba(10, 10, 15, 0.6); 
   }
+  
   .home-logo {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
@@ -126,7 +127,7 @@ const style = `
   .home-hero-sub {
     margin-top: 24px;
     font-size: 1rem;
-    color: #4a5580;
+    color: var(--muted);
     max-width: 480px;
     line-height: 1.6;
     font-weight: 300;
@@ -207,7 +208,8 @@ const style = `
     opacity: 0;
     transition: opacity 0.25s;
   }
-  .home-card:hover { background: #0d1225; }
+  .home-card:hover { background: #161620; 
+  border-color: var(--accent); }
   .home-card:hover::after { opacity: 1; }
   .home-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; }
   .home-card-num { font-family: 'Syne', sans-serif; font-size: 0.68rem; font-weight: 700; color: #2a3560; letter-spacing: 0.12em; }
@@ -554,13 +556,16 @@ function usePlexusAnimation(canvasRef) {
     }
 
     function drawBg() {
-      ctx.fillStyle = "#020818";
+      // Change from #020818 to #0A0A0F
+      ctx.fillStyle = "#0A0A0F"; 
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
       const g = ctx.createRadialGradient(
         canvas.width * 0.5, canvas.height * 0.4, 0,
         canvas.width * 0.5, canvas.height * 0.4, canvas.width * 0.65
       );
-      g.addColorStop(0, "rgba(0,20,70,0.6)");
+      // Adjusted the glow to be subtler for the darker background
+      g.addColorStop(0, "rgba(20, 20, 35, 0.5)"); 
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
