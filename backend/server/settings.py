@@ -227,14 +227,13 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_DOMAIN': 'localhost',     # allow both localhost & 127.0.0.1
 }
 
-CORS_ALLOW_ALL_ORIGINS = True
-# CORS_ALLOWED_ORIGINS = [
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
   
-#     "http://127.0.0.1:3000",
-# ]
+    "https://career-companion-l6kw.onrender.com",
+]
 CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:3000",
-    "http://localhost:3000",
+    "https://career-companion-l6kw.onrender.com",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
