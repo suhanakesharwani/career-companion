@@ -47,3 +47,12 @@ async def evaluate_answer_async(question, answer):
     system = "Evaluate accurately. format: TECHNICAL ACCURACY: [Score]/10, CLARITY: [Score]/10, DEPTH: [Score]/10."
     prompt = f"Question: {question}\nUser Answer: {answer}"
     return await query_ai(prompt, system)
+
+
+def generate_question(role, level):
+    """Sync wrapper for the HTTP GET view."""
+    return asyncio.run(generate_question_async(role, level))
+
+def evaluate_answer(question, answer):
+    """Sync wrapper for the HTTP POST view."""
+    return asyncio.run(evaluate_answer_async(question, answer))
