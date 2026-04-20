@@ -40,9 +40,8 @@ urlpatterns = [
     # path('api/auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('ai-interview/',include('ai_interview.urls'))
 ] 
-
-if settings.DEBUG==True:
-    urlpatterns+= static (
-        settings.MEDIA_URL,
-        document_root=settings.MEDIA_ROOT
-    ) 
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+    ]
