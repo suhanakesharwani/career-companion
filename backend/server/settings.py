@@ -109,7 +109,7 @@ if not DEBUG:
     MIDDLEWARE = [m for m in MIDDLEWARE if 'debug_toolbar' not in m]
     INSTALLED_APPS = [a for a in INSTALLED_APPS if 'debug_toolbar' not in a]
 
-    
+
 ROOT_URLCONF = 'server.urls'
 
 TEMPLATES = [
@@ -305,3 +305,17 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+if DEBUG:
+    # 1. Add Debug Toolbar to Apps
+    if "debug_toolbar" not in INSTALLED_APPS:
+        INSTALLED_APPS.append("debug_toolbar")
+    
+    # 2. Add Debug Toolbar to Middleware (must be near the top)
+    if "debug_toolbar.middleware.DebugToolbarMiddleware" not in MIDDLEWARE:
+        MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+    
+    # 3. Required for the toolbar to show up locally
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]

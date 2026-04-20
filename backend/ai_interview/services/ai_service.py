@@ -1,6 +1,8 @@
 import httpx
 import os
 import asyncio
+from asgiref.sync import async_to_sync
+
 
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
 API_KEY = os.getenv("GROQ_API_KEY")
@@ -50,9 +52,9 @@ async def evaluate_answer_async(question, answer):
 
 
 def generate_question(role, level):
-    """Sync wrapper for the HTTP GET view."""
-    return asyncio.run(generate_question_async(role, level))
+    """Sync wrapper for HTTP views."""
+    return async_to_sync(generate_question_async)(role, level)
 
 def evaluate_answer(question, answer):
-    """Sync wrapper for the HTTP POST view."""
-    return asyncio.run(evaluate_answer_async(question, answer))
+    """Sync wrapper for HTTP views."""
+    return async_to_sync(evaluate_answer_async)(question, answer)
