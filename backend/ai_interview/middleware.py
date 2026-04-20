@@ -17,13 +17,19 @@ class JWTAuthMiddleware:
 
         scope["user"] = AnonymousUser()
 
+        # ai_interview/middleware.py
         try:
-            cookies = {}
             if b"cookie" in headers:
                 cookie_header = headers[b"cookie"].decode()
-                cookies = dict(item.split("=") for item in cookie_header.split("; "))
-
-            token = cookies.get("access_token")
+                # Splits by ; then splits by = only ONCE (using .split('=', 1))
+                cookies = {}
+                for item in cookie_header.split(";"):
+                    if "=" in item:
+                        k, v = item.strip().split("=", 1)
+                        cookies[k] = v
+                
+                token = cookies.get("access_token")
+        # ... rest of your code
 
             if token:
                 payload = jwt.decode(

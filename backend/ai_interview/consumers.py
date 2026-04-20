@@ -68,6 +68,7 @@ MAX_MESSAGES_PER_MIN = 20      # spam protection
 class InterviewConsumer(WebsocketConsumer):
     def connect(self):
         user = self.scope["user"]
+        print(f"DEBUG: Connection attempt by user: {user}")
 
         if user.is_anonymous:
             self.close()
