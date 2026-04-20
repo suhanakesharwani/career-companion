@@ -53,6 +53,7 @@ else:
 
 ALLOWED_HOSTS = [
     "career-companion-backend-uhlf.onrender.com",
+    "https://career-companion-l6kw.onrender.com/home",
     "127.0.0.1",
     "localhost",
 ]
