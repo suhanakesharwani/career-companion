@@ -20,6 +20,8 @@ import dj_database_url
 load_dotenv()
 
 
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -29,6 +31,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
+
+
 
 # ============EMAIL CONFIGURATION==========================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -101,6 +105,11 @@ MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",  # usually last
 ]
 
+if not DEBUG:
+    MIDDLEWARE = [m for m in MIDDLEWARE if 'debug_toolbar' not in m]
+    INSTALLED_APPS = [a for a in INSTALLED_APPS if 'debug_toolbar' not in a]
+
+    
 ROOT_URLCONF = 'server.urls'
 
 TEMPLATES = [
