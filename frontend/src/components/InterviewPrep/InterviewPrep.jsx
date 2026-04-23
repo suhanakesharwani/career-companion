@@ -351,7 +351,7 @@ export default function InterviewPrep() {
   /* FETCH ROLES — merge API data with guaranteed Data Scientist card */
   const fetchRoles = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/roles/`,{ withCredentials: true });
+      const res = await axios.get(`${API}/roles/`);
       const apiRoles = res.data;
       // Ensure Data Scientist is always present
       const hasDS = apiRoles.some(r => r.name.toLowerCase().includes("data scientist"));
@@ -365,7 +365,7 @@ export default function InterviewPrep() {
   /* FETCH CALENDAR */
   const fetchCalendar = useCallback(async () => {
     try {
-      const res = await axios.get(`${API}/calendar/`,{ withCredentials: true });
+      const res = await axios.get(`${API}/calendar/`);
       setCalendar(res.data);
     } catch (err) { console.error(err); }
   }, []);
@@ -380,11 +380,11 @@ export default function InterviewPrep() {
     setSelectedTopicIdx(null);
     setLoading(true);
     try {
-      const topicsRes = await axios.get(`${API}/roles/${role.id}/topics/`,{ withCredentials: true });
+      const topicsRes = await axios.get(`${API}/roles/${role.id}/topics/`);
       const topics = topicsRes.data;
       // Fetch todos for every topic in parallel
       const allTodos = await Promise.all(
-        topics.map(t => axios.get(`${API}/topics/${t.id}/todos/`,{ withCredentials: true }).then(r => r.data))
+        topics.map(t => axios.get(`${API}/topics/${t.id}/todos/`).then(r => r.data))
       );
       setTopicsData(topics.map((t, i) => ({ topic: t, todos: allTodos[i] || [] })));
       setTimeout(() => dashRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 80);
@@ -453,7 +453,7 @@ export default function InterviewPrep() {
     if (newState) {
       // Completing → call API
       try {
-        await axios.post(`${API}/todos/${todoId}/complete/`, {},  { withCredentials: true } );
+        await axios.post(`${API}/todos/${todoId}/complete/`, {});
         // Sync calendar from server to stay accurate
         fetchCalendar();
       } catch (err) {
