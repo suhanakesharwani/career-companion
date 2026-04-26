@@ -448,7 +448,10 @@ export default function InterviewPrep() {
       i !== topicIdx ? d : { ...d, todos: d.todos.map(t => t.id === todoId ? { ...t, completed: newState } : t) }
     ));
     // Update weekly bar immediately
-    bumpCalendarToday(newState ? 1 : -1);
+    if (newState) {
+      await axios.post(`${API}/todos/${todoId}/complete/`, {});
+      fetchCalendar();
+    }
 
     if (newState) {
       // Completing → call API
@@ -462,7 +465,7 @@ export default function InterviewPrep() {
         setTopicsData(prev => prev.map((d, i) =>
           i !== topicIdx ? d : { ...d, todos: d.todos.map(t => t.id === todoId ? { ...t, completed: false } : t) }
         ));
-        bumpCalendarToday(-1);
+        // bumpCalendarToday(-1);
       }
     }
     // Uncompleting: backend has no endpoint, state is already toggled locally above

@@ -1,19 +1,19 @@
 from sentence_transformers import SentenceTransformer
 
-MODEL = None
+MODEL = SentenceTransformer("paraphrase-MiniLM-L3-v2") 
 
-def get_model():
-    global MODEL
-    if MODEL is None:
-        MODEL = SentenceTransformer("paraphrase-MiniLM-L3-v2")
-    return MODEL
+# def get_model():
+#     global MODEL
+#     if MODEL is None:
+#         MODEL = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+#     return MODEL
 
 
 def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
     from sklearn.metrics.pairwise import cosine_similarity
     import numpy as np
 
-    model = get_model()   # 👈 HERE you use it
+    # model = get_model()   # 👈 HERE you use it
 
     if not jd_skills or not resume_skills:
         return {

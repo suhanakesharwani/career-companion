@@ -1,9 +1,13 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from ai_utils import semantic_skill_match
-
+from ai_utils import MODEL
 app = FastAPI()
 
+
+@app.on_event("startup")
+def warmup():
+    MODEL.encode(["warmup"]) 
 
 class MatchRequest(BaseModel):
     jd_skills: list[str]
