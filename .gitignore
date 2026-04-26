@@ -60,7 +60,7 @@ docker.env
 settings_prod.py
 produc
 secrets.json
-nginx.conf
+# nginx.conf
 
 *.bin
 *.pt
