@@ -180,7 +180,9 @@ export default function ResumeMatcher() {
     try {
       const res = await axios.post(
         "https://career-companion-backend-uhlf.onrender.com/matching/",
-        formData
+        formData,{
+          withCredentials:true
+        }
       );
 
       setResult(res.data.matching_result);

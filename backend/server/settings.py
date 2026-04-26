@@ -92,6 +92,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",        # first
     "django.middleware.security.SecurityMiddleware",
@@ -162,7 +163,7 @@ CACHES = {
 }
 
 
-# Password validation
+# Password validation suhana MAIT
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
