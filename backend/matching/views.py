@@ -6,7 +6,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 
 # Internal Imports (Ensure these paths match your folder names!)
-from .ai_clients import get_skill_match  # Changed to 'ai_clients' to match your file
+from matching.ai_client import get_skill_match
 from resumes.models import Resume
 from jobs.models import JobDescription
 from resumes.utils import extract_text_from_resume
