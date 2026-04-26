@@ -1,6 +1,6 @@
 import requests
 
-AI_SERVICE_URL = "http://127.0.0.1:8001/match"
+AI_SERVICE_URL = "https://career-companion-ai-v1rj.onrender.com/match"
 
 
 def get_skill_match(jd_skills, resume_skills):
