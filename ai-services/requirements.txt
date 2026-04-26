@@ -3,3 +3,5 @@ uvicorn
 sentence-transformers
 scikit-learn
 numpy
+pydantic
+
