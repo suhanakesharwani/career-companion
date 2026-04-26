@@ -62,6 +62,11 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
+AI_SERVICE_URL = os.getenv(
+    "AI_SERVICE_URL",
+    "http://127.0.0.1:8001"
+)
+
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=BASE_DIR/"media"
@@ -138,7 +143,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DB_URL"),
+        default=os.environ.get("DATABASE_URL"),
         conn_max_age=600,
     )
 }

@@ -4,7 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-httpx = "*"
+fastapi = "*"
+uvicorn = "*"
+sentence-transformers = "*"
+scikit-learn = "*"
+numpy = "*"
 
 [dev-packages]
 

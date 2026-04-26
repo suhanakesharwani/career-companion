@@ -86,6 +86,7 @@ const AiInterview = () => {
 
   const transcriptRef = useRef("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -108,10 +109,13 @@ const AiInterview = () => {
     recognition.onend = () => setIsListening(false);
 
     connectSocket(
-      () => setConnected(true),
+      () => {setConnected(true);
+      setLoading(false);
+      },
       (event) => {
         const data = JSON.parse(event.data);
         if (data.type === "question") {
+          setLoading(false);
           setQuestion(DOMPurify.sanitize(data.question));
           speak(data.question);
         }
@@ -172,7 +176,17 @@ const AiInterview = () => {
       socket.send(JSON.stringify({ type: "answer", answer: finalAnswer, question }));
     }
   };
-
+  if (loading) {
+    return (
+      <>
+        <style>{CSS}</style>
+        <div className="dashboard-loader">
+          <div className="loader-ring"></div>
+          <p>Initializing AI Interview...</p>
+        </div>
+      </>
+    );
+  }
   return (
     <>
       <style>{CSS}</style>
@@ -603,6 +617,33 @@ const CSS = `
   .action-row { flex-direction: column; }
   .action-btn { width: 100%; }
   .card { padding: 22px 18px; }
+}
+
+/* ── Loader ── */
+.dashboard-loader {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text);
+  gap: 18px;
+  font-family: var(--font-display);
+}
+
+.loader-ring {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--accent);
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 `;
 
