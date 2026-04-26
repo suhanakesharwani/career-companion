@@ -61,3 +61,7 @@ settings_prod.py
 produc
 secrets.json
 nginx.conf
+
+*.bin
+*.pt
+*.h5
