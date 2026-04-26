@@ -62,11 +62,7 @@ ALLOWED_HOSTS = [
     "localhost",
 ]
 
-AI_SERVICE_URL = os.getenv(
-    "AI_SERVICE_URL",
-    "http://127.0.0.1:8001"
-)
-
+AI_SERVICE_URL = os.getenv("AI_SERVICE_URL")
 
 MEDIA_URL='/media/'
 MEDIA_ROOT=BASE_DIR/"media"

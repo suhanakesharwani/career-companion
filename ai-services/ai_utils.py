@@ -1,17 +1,19 @@
 from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 
-print("Loading embedding model...")
+MODEL = None
 
-MODEL = SentenceTransformer("all-MiniLM-L6-v2")
-
-MODEL.encode(["warmup"])
-
-print("Model ready.")
+def get_model():
+    global MODEL
+    if MODEL is None:
+        MODEL = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+    return MODEL
 
 
 def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
+    from sklearn.metrics.pairwise import cosine_similarity
+    import numpy as np
+
+    model = get_model()   # 👈 HERE you use it
 
     if not jd_skills or not resume_skills:
         return {
@@ -20,21 +22,21 @@ def semantic_skill_match(jd_skills, resume_skills, threshold=0.65):
             "score": 0.0
         }
 
-    jd_embeddings = MODEL.encode(jd_skills)
-    resume_embeddings = MODEL.encode(resume_skills)
+    jd_embeddings = model.encode(jd_skills)
+    resume_embeddings = model.encode(resume_skills)
 
-    similarity_matrix = cosine_similarity(
-        jd_embeddings,
-        resume_embeddings
-    )
+    similarity_matrix = cosine_similarity(jd_embeddings, resume_embeddings)
 
-    matched, missing = [], []
+    matched = []
+    missing = []
 
-    for i, skill in enumerate(jd_skills):
-        if np.max(similarity_matrix[i]) >= threshold:
-            matched.append(skill)
+    for i, jd_skill in enumerate(jd_skills):
+        max_score = np.max(similarity_matrix[i])
+
+        if max_score >= threshold:
+            matched.append(jd_skill)
         else:
-            missing.append(skill)
+            missing.append(jd_skill)
 
     score = round(len(matched) / max(len(jd_skills), 1), 2)
 
