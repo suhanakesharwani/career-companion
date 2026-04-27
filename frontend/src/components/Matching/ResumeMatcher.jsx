@@ -162,43 +162,69 @@ export default function ResumeMatcher() {
 
   const [resume, setResume] = useState(null);
   const [jdText, setJdText] = useState("");
-  const [result, setResult] = useState({ matched_skills: [], missing_skills: [], score: 0 });
   const [error, setError] = useState("");
 
+  // Change initial state to null
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!resume || !jdText) {
-      setError("Resume and Job Description are required");
-      return;
-    }
+      e.preventDefault();
+      setError("");
+      setResult(null);
 
-    const formData = new FormData();
-    formData.append("resume", resume);
-    formData.append("jd_text", jdText);
-
-    try {
-      const res = await axios.post(
-        "https://career-companion-backend-uhlf.onrender.com/matching/",
-        formData,
-        { withCredentials: true }
-      );
-
-      
-      if (res.data?.matching_result) {
-        setResult(res.data.matching_result);
-      } else {
-        setError(res.data?.error || "Unexpected response");
+      if (!resume || !jdText) {
+          setError("Resume and Job Description are required");
+          return;
       }
 
-    } catch (err) {
-      console.error("Analysis Error:", err);
-      setError("Failed to analyze resume. The AI service might be waking up.");
-      
-      // rESET TO DEFAULT STRUCTURE ON ERROR
-      setResult({ matched_skills: [], missing_skills: [], score: 0 });
-    }
-  };
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("resume", resume);
+      formData.append("jd_text", jdText);
 
+      try {
+          const res = await axios.post(
+              "https://career-companion-backend-uhlf.onrender.com/matching/",
+              formData,
+              { withCredentials: true }
+          );
+
+          const data = res.data;
+
+          // Safely extract with fallbacks
+          const matchingResult = data?.matching_result;
+
+          if (matchingResult) {
+              setResult({
+                  matched_skills: Array.isArray(matchingResult.matched_skills)
+                      ? matchingResult.matched_skills
+                      : [],
+                  missing_skills: Array.isArray(matchingResult.missing_skills)
+                      ? matchingResult.missing_skills
+                      : [],
+                  score: typeof matchingResult.score === "number"
+                      ? matchingResult.score
+                      : 0,
+              });
+          } else {
+              setError(data?.error || "No result returned from server.");
+          }
+
+      } catch (err) {
+          console.error("Analysis Error:", err);
+
+          if (err.response?.status === 503) {
+              setError("AI service is waking up — please wait 20 seconds and try again.");
+          } else if (err.response?.status === 404) {
+              setError("API endpoint not found. Check your backend URL.");
+          } else {
+              setError("Failed to analyze resume. Please try again.");
+          }
+      } finally {
+          setLoading(false);
+      }
+  };
   return (
     <>
       <style>{style}</style>
@@ -239,38 +265,48 @@ export default function ResumeMatcher() {
           </div>
 
           {/* RESULT */}
-          {result && (
-            <div className="matcher-result">
-              <div className="matcher-score">
-                Match Score: <span>{Math.round(result.score * 100)}%</span>
-              </div>
+          <button
+            type="submit"
+            className="matcher-btn"
+            disabled={loading}
+        >
+            {loading ? "Analyzing..." : "Analyze"}
+        </button>
 
-              <div className="result-grid">
-                <div className="result-block">
-                  <h4>Matched Skills</h4>
-                  <ul>
-                    {result?.matched_skills?.map((skill, index) => (
-                      <li key={index} className="skill-badge">{skill}</li>
-                    )) || <p>No skills matched yet.</p>}
-                  </ul>
-                </div>
+        {/* Only render result card when we actually have data */}
+                  {result && (
+                      <div className="matcher-result">
+                          <div className="matcher-score">
+                              Match Score: <span>{Math.round(result.score * 100)}%</span>
+                          </div>
 
-                <div className="result-block">
-                  <h4>Missing Skills</h4>
-                  <ul>
-                    
-                    {result?.missing_skills?.length > 0 ? (
-                      result.missing_skills.map((s, i) => (
-                        <li key={i}>{s}</li>
-                      ))
-                    ) : (
-                      <li>No missing skills identified</li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          )}
+                          <div className="result-grid">
+                              <div className="result-block">
+                                  <h4>Matched Skills</h4>
+                                  <ul>
+                                      {result.matched_skills.length > 0
+                                          ? result.matched_skills.map((skill, i) => (
+                                              <li key={i}>{skill}</li>
+                                            ))
+                                          : <li>No skills matched</li>
+                                      }
+                                  </ul>
+                              </div>
+
+                              <div className="result-block">
+                                  <h4>Missing Skills</h4>
+                                  <ul>
+                                      {result.missing_skills.length > 0
+                                          ? result.missing_skills.map((s, i) => (
+                                              <li key={i}>{s}</li>
+                                            ))
+                                          : <li>No missing skills identified</li>
+                                      }
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+                  )}
 
         </div>
       </div>

@@ -28,7 +28,7 @@ async def query_ai(prompt, system_prompt="You are a professional interviewer."):
                     ],
                     "max_tokens": 200,
                 },
-                timeout=20.0,
+                timeout=60.0,
             )
             if resp.status_code != 200:
                 return "AI unavailable"
