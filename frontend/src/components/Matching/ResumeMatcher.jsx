@@ -242,8 +242,8 @@ export default function ResumeMatcher() {
                 <div className="result-block">
                   <h4>Matched Skills</h4>
                   <ul>
-                    {result.matched_skills.map((s, i) => (
-                      <li key={i}>{s}</li>
+                    {result?.matched_skills?.map((skill, index) => (
+                      <li key={index}>{skill}</li>
                     ))}
                   </ul>
                 </div>
