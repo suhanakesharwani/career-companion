@@ -34,6 +34,7 @@ DEBUG = os.getenv("DEBUG") == "True"
 
 
 
+
 # ============EMAIL CONFIGURATION==========================
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
