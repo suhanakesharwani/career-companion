@@ -46,7 +46,24 @@ async def generate_question_async(role, level):
     return await query_ai(prompt, system)
 
 async def evaluate_answer_async(question, answer):
-    system = "Evaluate accurately. format: TECHNICAL ACCURACY: [Score]/10, CLARITY: [Score]/10, DEPTH: [Score]/10."
+    system = """
+        You are an expert interview evaluator.
+
+        Evaluate the answer on:
+        - Technical Accuracy (0-10)
+        - Clarity (0-10)
+        - Depth (0-10)
+
+        STRICT FORMAT:
+
+        TECHNICAL ACCURACY: X/10 - <1 short reason>
+        CLARITY: X/10 - <1 short reason>
+        DEPTH: X/10 - <1 short reason>
+
+        OVERALL FEEDBACK:
+        - 2–3 specific suggestions to improve clarity and structure.
+        - Be constructive and concise.
+        """
     prompt = f"Question: {question}\nUser Answer: {answer}"
     return await query_ai(prompt, system)
 
