@@ -61,12 +61,15 @@ An immersive **speech-based mock interview platform** that simulates real-world 
 Moves beyond keyword matching by understanding **semantic intent**.
 
 ### Capabilities
-- Uses **SentenceTransformers** embeddings.
-- Calculates **cosine similarity** between Resume and Job Description.
+- Uses Hugging Face SentenceTransformer (all-MiniLM-L6-v2) for semantic matching
+- Handles skill normalization (e.g., React.js → react, sklearn → scikit-learn)
+- Computes match score between resume and JD
+- Generates AI insights using Mistral-7B
 - Produces:
   - Match Percentage
   - Skill Alignment Insights
   - Gap Identification
+  - AI Insights
 
 ---
 
