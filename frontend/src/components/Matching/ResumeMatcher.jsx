@@ -162,7 +162,7 @@ export default function ResumeMatcher() {
 
   const [resume, setResume] = useState(null);
   const [jdText, setJdText] = useState("");
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState({ matched_skills: [], missing_skills: [], score: 0 });
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
@@ -242,18 +242,23 @@ export default function ResumeMatcher() {
                 <div className="result-block">
                   <h4>Matched Skills</h4>
                   <ul>
-                    {result?.matched_skills?.map((skill, index) => (
-                      <li key={index}>{skill}</li>
-                    ))}
+                    {results?.matched_skills?.map((skill, index) => (
+                      <li key={index} className="skill-badge">{skill}</li>
+                    )) || <p>No skills matched yet.</p>}
                   </ul>
                 </div>
 
                 <div className="result-block">
                   <h4>Missing Skills</h4>
                   <ul>
-                    {result.missing_skills.map((s, i) => (
-                      <li key={i}>{s}</li>
-                    ))}
+                    {/* Corrected 'results' to 'result' and added safety check */}
+                    {result?.missing_skills?.length > 0 ? (
+                      result.missing_skills.map((s, i) => (
+                        <li key={i}>{s}</li>
+                      ))
+                    ) : (
+                      <li>No missing skills identified</li>
+                    )}
                   </ul>
                 </div>
               </div>
