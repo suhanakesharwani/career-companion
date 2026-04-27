@@ -98,13 +98,21 @@ const AiInterview = () => {
       recognition.lang = "en-US";
     }
     recognition.onresult = (event) => {
-      let fullText = "";
-      for (let i = 0; i < event.results.length; i++) {
-        fullText += event.results[i][0].transcript;
-      }
-      setUserAnswer(fullText);
-      transcriptRef.current = fullText;
-    };
+        let finalText = transcriptRef.current;  // keep what was already confirmed
+        let interimText = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {  // start from new results only
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalText += transcript + " ";  // commit final results
+          } else {
+            interimText += transcript;      // show interim results live
+          }
+        }
+
+        transcriptRef.current = finalText;
+        setUserAnswer(finalText + interimText);  // display both
+      };
     recognition.onerror = () => setIsListening(false);
     recognition.onend = () => setIsListening(false);
 

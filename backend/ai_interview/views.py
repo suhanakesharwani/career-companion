@@ -5,9 +5,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from django_ratelimit.decorators import ratelimit
 
-@ratelimit(key='user',rate='10/m',block=True)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
+@ratelimit(key='user',rate='10/m',block=True)
 def get_ai_question(request):
 
     role = request.GET.get("role")
