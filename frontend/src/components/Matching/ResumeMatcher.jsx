@@ -217,16 +217,14 @@ export default function ResumeMatcher() {
 
           if (matchingResult) {
               setResult({
-                  matched_skills: Array.isArray(matchingResult.matched_skills)
-                      ? matchingResult.matched_skills
-                      : [],
-                  missing_skills: Array.isArray(matchingResult.missing_skills)
-                      ? matchingResult.missing_skills
-                      : [],
-                  score: typeof matchingResult.score === "number"
-                      ? matchingResult.score
-                      : 0,
-              });
+                matched_skills: Array.isArray(matchingResult.matched_skills)
+                    ? matchingResult.matched_skills : [],
+                missing_skills: Array.isArray(matchingResult.missing_skills)
+                    ? matchingResult.missing_skills : [],
+                score: typeof matchingResult.score === "number"
+                    ? matchingResult.score : 0,
+                insight: matchingResult.insight || null,  // ✅ add this line
+            });
           } else {
               setError(data?.error || "No result returned from server.");
           }
@@ -248,19 +246,14 @@ export default function ResumeMatcher() {
   return (
     <>
       <style>{style}</style>
-
       <div className="matcher-root">
         <div className="matcher-container">
 
-          {/* HEADER */}
           <div className="matcher-header">
-            <h1>
-              Resume–JD <span>Matcher</span>
-            </h1>
+            <h1>Resume–JD <span>Matcher</span></h1>
             <p>Compare your resume with job descriptions instantly</p>
           </div>
 
-          {/* FORM */}
           <div className="matcher-card">
             <form onSubmit={handleSubmit}>
               <input
@@ -268,71 +261,60 @@ export default function ResumeMatcher() {
                 accept=".pdf,.doc,.docx"
                 onChange={(e) => setResume(e.target.files[0])}
               />
-
               <textarea
                 rows="8"
                 placeholder="Paste job description..."
                 value={jdText}
                 onChange={(e) => setJdText(e.target.value)}
               />
-
-              <button type="submit" className="matcher-btn">
-                Analyze
+              {/* ✅ Only ONE button, inside the form */}
+              <button type="submit" className="matcher-btn" disabled={loading}>
+                {loading ? "Analyzing..." : "Analyze"}
               </button>
             </form>
-
             {error && <p className="matcher-error">{error}</p>}
           </div>
 
-          {/* RESULT */}
-          <button
-            type="submit"
-            className="matcher-btn"
-            disabled={loading}
-        >
-            {loading ? "Analyzing..." : "Analyze"}
-        </button>
+          {/* ✅ Everything inside ONE result check */}
+          {result && (
+            <div className="matcher-result">
+              <div className="matcher-score">
+                Match Score: <span>{Math.round(result.score * 100)}%</span>
+              </div>
 
-        {/* Only render result card when we actually have data */}
-                  {result && (
-                      <div className="matcher-result">
-                          <div className="matcher-score">
-                              Match Score: <span>{Math.round(result.score * 100)}%</span>
-                          </div>
+              <div className="result-grid">
+                <div className="result-block">
+                  <h4>Matched Skills</h4>
+                  <ul>
+                    {result.matched_skills?.length > 0
+                      ? result.matched_skills.map((skill, i) => (
+                          <li key={i}>{skill}</li>
+                        ))
+                      : <li>No skills matched</li>
+                    }
+                  </ul>
+                </div>
 
-                          <div className="result-grid">
-                              <div className="result-block">
-                                  <h4>Matched Skills</h4>
-                                  <ul>
-                                      {result.matched_skills.length > 0
-                                          ? result.matched_skills.map((skill, i) => (
-                                              <li key={i}>{skill}</li>
-                                            ))
-                                          : <li>No skills matched</li>
-                                      }
-                                  </ul>
-                              </div>
+                <div className="result-block">
+                  <h4>Missing Skills</h4>
+                  <ul>
+                    {result.missing_skills?.length > 0
+                      ? result.missing_skills.map((s, i) => (
+                          <li key={i}>{s}</li>
+                        ))
+                      : <li>No missing skills</li>
+                    }
+                  </ul>
+                </div>
+              </div>
 
-                              <div className="result-block">
-                                  <h4>Missing Skills</h4>
-                                  <ul>
-                                      {result.missing_skills.length > 0
-                                          ? result.missing_skills.map((s, i) => (
-                                              <li key={i}>{s}</li>
-                                            ))
-                                          : <li>No missing skills identified</li>
-                                      }
-                                  </ul>
-                              </div>
-                          </div>
-                      </div>
-                  )}
-
-
-          {result.insight && (
-            <div className="matcher-insight">
-              <h4>AI Insights</h4>
-              <p>{result.insight}</p>
+              {/* ✅ insight inside result check — no crash */}
+              {result.insight && (
+                <div className="matcher-insight">
+                  <h4>AI Insights</h4>
+                  <p>{result.insight}</p>
+                </div>
+              )}
             </div>
           )}
 
