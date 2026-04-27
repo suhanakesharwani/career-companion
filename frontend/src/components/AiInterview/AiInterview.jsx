@@ -99,6 +99,9 @@ const AiInterview = () => {
       recognition.interimResults = true;
       recognition.lang = "en-US";
     }
+    recognition.onspeechend = () => {
+      
+    };
     recognition.onresult = (event) => {
         let finalText = transcriptRef.current;  // keep what was already confirmed
         let interimText = "";
@@ -153,11 +156,19 @@ const AiInterview = () => {
 
   const speak = (text) => {
     window.speechSynthesis.cancel();
+
     const speech = new SpeechSynthesisUtterance(text);
+
     speech.onstart = () => setIsAiSpeaking(true);
+
     speech.onend = () => setIsAiSpeaking(false);
+
     speech.onerror = () => setIsAiSpeaking(false);
+
     window.speechSynthesis.speak(speech);
+
+    // failsafe
+    setTimeout(() => setIsAiSpeaking(false), 15000);
   };
 
   const startInterview = () => {
@@ -170,10 +181,48 @@ const AiInterview = () => {
   };
 
   const handleStartRecording = () => {
-    if (!recognition || isAiSpeaking) return;
-    setUserAnswer(""); transcriptRef.current = "";
-    try { recognition.start(); setIsListening(true); }
-    catch (e) { recognition.stop(); setTimeout(() => { recognition.start(); setIsListening(true); }, 200); }
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      alert("Speech Recognition not supported");
+      return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    transcriptRef.current = "";
+    setUserAnswer("");
+
+    recognition.onresult = (event) => {
+      let finalText = transcriptRef.current;
+      let interimText = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += transcript + " ";
+        } else {
+          interimText += transcript;
+        }
+      }
+
+      transcriptRef.current = finalText;
+      setUserAnswer(finalText + interimText);
+    };
+
+    recognition.onerror = (e) => {
+      console.error("Speech error:", e);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => setIsListening(false);
+
+    recognition.start();
+    setIsListening(true);
   };
 
   const handleStopAndSubmit = () => {
