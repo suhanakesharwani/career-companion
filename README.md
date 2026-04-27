@@ -156,14 +156,6 @@ This project aims to evolve into a full AI-powered career ecosystem that helps i
 
 ## ⚠️ Usage Policy
 
-This repository is shared **strictly for portfolio and demonstration purposes**.
-
-You may **view** the code for learning and evaluation, but:
-
-- ❌ Copying or redistributing the project is not permitted  
-- ❌ Using this work as your own submission is prohibited  
-- ❌ Commercial usage without permission is not allowed  
-
 All Rights Reserved © 2026 Suhana Kesharwani.
 
 ---
