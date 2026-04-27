@@ -28,9 +28,10 @@ def clean_text(text):
     return text
 
 
-@ratelimit(key='user',rate='10/m',block=True)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+
+@ratelimit(key='user',rate='10/m',block=True)
 def evaluate_ai_answer(request):
     #validate the answer and question 
     question = clean_text(request.data.get("question"))
