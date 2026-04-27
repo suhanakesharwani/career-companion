@@ -167,7 +167,6 @@ export default function ResumeMatcher() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!resume || !jdText) {
       setError("Resume and Job Description are required");
       return;
@@ -180,15 +179,23 @@ export default function ResumeMatcher() {
     try {
       const res = await axios.post(
         "https://career-companion-backend-uhlf.onrender.com/matching/",
-        formData,{
-          withCredentials:true
-        }
+        formData,
+        { withCredentials: true }
       );
 
-      setResult(res.data.matching_result);
-      setError("");
+      
+      if (res.data?.matching_result) {
+        setResult(res.data.matching_result);
+      } else {
+        setError(res.data?.error || "Unexpected response");
+      }
+
     } catch (err) {
-      setError("Failed to analyze resume");
+      console.error("Analysis Error:", err);
+      setError("Failed to analyze resume. The AI service might be waking up.");
+      
+      // rESET TO DEFAULT STRUCTURE ON ERROR
+      setResult({ matched_skills: [], missing_skills: [], score: 0 });
     }
   };
 

@@ -68,11 +68,23 @@ class UploadAndMatchAPIView(APIView):
             )
         except Exception as e:
             # Fallback if the AI service is down/cold starting
+         
+
             return Response({
-                "error": "AI service is currently busy. Data saved.",
-                "resume_id": resume.id,
-                "job_id": job.id
+                "matching_result": {
+                    "matched_skills": [],
+                    "missing_skills": [],
+                    "score": 0
+                },
+                "error": "AI service is busy"   
             }, status=503)
+        
+
+        if matching_result and "matched_skills" in matching_result:
+            # Logic: Missing = (Everything in JD) minus (What we matched)
+            all_jd = set(jd_skills) 
+            matched = set(matching_result.get("matched_skills", []))
+            matching_result["missing_skills"] = list(all_jd - matched)
 
         # 4. Final Response
         return Response({
