@@ -242,7 +242,7 @@ export default function ResumeMatcher() {
                 <div className="result-block">
                   <h4>Matched Skills</h4>
                   <ul>
-                    {results?.matched_skills?.map((skill, index) => (
+                    {result?.matched_skills?.map((skill, index) => (
                       <li key={index} className="skill-badge">{skill}</li>
                     )) || <p>No skills matched yet.</p>}
                   </ul>
@@ -251,7 +251,7 @@ export default function ResumeMatcher() {
                 <div className="result-block">
                   <h4>Missing Skills</h4>
                   <ul>
-                    {/* Corrected 'results' to 'result' and added safety check */}
+                    
                     {result?.missing_skills?.length > 0 ? (
                       result.missing_skills.map((s, i) => (
                         <li key={i}>{s}</li>
