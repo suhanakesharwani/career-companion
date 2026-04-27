@@ -111,6 +111,26 @@ const style = `
   color: #C8FF57;
 }
 
+.matcher-insight {
+  margin-top: 20px;
+  padding: 16px;
+  background: #0A0A0F;
+  border: 1px solid #C8FF57;
+  border-radius: 12px;
+}
+
+.matcher-insight h4 {
+  color: #C8FF57;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.matcher-insight p {
+  color: #aaa;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
 /* GRID */
 .result-grid {
   display: grid;
@@ -307,6 +327,14 @@ export default function ResumeMatcher() {
                           </div>
                       </div>
                   )}
+
+
+          {result.insight && (
+            <div className="matcher-insight">
+              <h4>AI Insights</h4>
+              <p>{result.insight}</p>
+            </div>
+          )}
 
         </div>
       </div>
