@@ -88,6 +88,8 @@ const AiInterview = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
+
+  //suhana kesharwani MAIT
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return;

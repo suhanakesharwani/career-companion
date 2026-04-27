@@ -10,6 +10,25 @@ By leveraging **Large Language Models (LLMs)**, real-time communication protocol
 
 ---
 
+
+## 🎥 Demo Video
+
+👉 [Watch Demo Video]https://drive.google.com/file/d/1vDtRXO8TIVsqKlnXRmo2a46caBTEeIVa/view?usp=sharing
+
+
+[![Career-Companion Demo](assets/demo.png)](https://drive.google.com/file/d/1vDtRXO8TIVsqKlnXRmo2a46caBTEeIVa/view?usp=sharing)
+
+
+---
+
+## 🌐 Live Project
+
+👉 [Visit Live Website](https://career-companion-l6kw.onrender.com/)
+
+
+---
+
+
 ## 🌟 Key Features
 
 ---
