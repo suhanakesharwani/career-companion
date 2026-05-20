@@ -139,7 +139,6 @@ const AiInterview = () => {
   }, []);
 
   /* ─── SPEECH RECOGNITION ─── */
- /* ─── SPEECH RECOGNITION ─── */
   useEffect(() => {
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -153,42 +152,29 @@ const AiInterview = () => {
     recognition.lang = "en-US";
 
     recognition.onresult = (event) => {
-      let finalText = transcriptRef.current;
       let interimText = "";
+      let finalText = ""; // Start fresh each result event
 
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) finalText += t + " ";
-        else interimText += t;
+      for (let i = 0; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalText += transcript + " ";
+        } else {
+          interimText += transcript;
+        }
       }
 
-      transcriptRef.current = finalText;
-      setUserAnswer(finalText + interimText);
-    };
-
-    // FIX: Handling the 'no-speech' error specifically
-    recognition.onerror = (event) => {
-      if (event.error === 'no-speech') {
-        // Just log it, don't stop the UI from showing "listening"
-        console.warn("Speech API: No speech detected, still listening...");
-        return; 
-      }
-      
-      console.error("Speech Error:", event.error);
-      setIsListening(false);
-    };
+        recognition.onerror = () => {
+          setIsListening(false);
+        };
 
     recognition.onend = () => {
-      // If the browser stops it automatically but we didn't click "Submit"
-      // we might want to restart it, or just set the state to false.
       setIsListening(false);
     };
 
     recognitionRef.current = recognition;
 
-    return () => {
-      if (recognitionRef.current) recognitionRef.current.stop();
-    };
+    return () => recognition.stop();
   }, []);
 
   /* ─── SPEAK AI QUESTION ─── */
