@@ -138,35 +138,51 @@ const AiInterview = () => {
     return () => socket.close();
   }, []);
 
-recognition.onresult = (event) => {
-  let interimText = "";
-  let finalText = "";
+  /* ─── SPEECH RECOGNITION ─── */
+  useEffect(() => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  for (let i = 0; i < event.results.length; i++) {
-    const transcript = event.results[i][0].transcript;
+    if (!SpeechRecognition) return;
 
-    if (event.results[i].isFinal) {
-      finalText += transcript + " ";
-    } else {
-      interimText += transcript;
-    }
-  }
+    const recognition = new SpeechRecognition();
 
-  // whatever you do with the text
-  // setTranscript(finalText + interimText);
-};
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
 
-recognition.onerror = () => {
-  setIsListening(false);
-};
+    recognition.onresult = (event) => {
+      let interimText = "";
+      let finalText = "";
 
-recognition.onend = () => {
-  setIsListening(false);
-};
+      for (let i = 0; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
 
-recognitionRef.current = recognition;
+        if (event.results[i].isFinal) {
+          finalText += transcript + " ";
+        } else {
+          interimText += transcript;
+        }
+      }
 
-return () => recognition.stop();
+      transcriptRef.current = finalText.trim();
+      setUserAnswer(finalText + interimText);
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.stop();
+    };
+  }, []);
 
   /* ─── SPEAK AI QUESTION ─── */
   const speak = (text) => {
