@@ -138,44 +138,35 @@ const AiInterview = () => {
     return () => socket.close();
   }, []);
 
-  /* ─── SPEECH RECOGNITION ─── */
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+recognition.onresult = (event) => {
+  let interimText = "";
+  let finalText = "";
 
-    if (!SpeechRecognition) return;
+  for (let i = 0; i < event.results.length; i++) {
+    const transcript = event.results[i][0].transcript;
 
-    const recognition = new SpeechRecognition();
+    if (event.results[i].isFinal) {
+      finalText += transcript + " ";
+    } else {
+      interimText += transcript;
+    }
+  }
 
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
+  // whatever you do with the text
+  // setTranscript(finalText + interimText);
+};
 
-    recognition.onresult = (event) => {
-      let interimText = "";
-      let finalText = ""; // Start fresh each result event
+recognition.onerror = () => {
+  setIsListening(false);
+};
 
-      for (let i = 0; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalText += transcript + " ";
-        } else {
-          interimText += transcript;
-        }
-      }
+recognition.onend = () => {
+  setIsListening(false);
+};
 
-        recognition.onerror = () => {
-          setIsListening(false);
-        };
+recognitionRef.current = recognition;
 
-    recognition.onend = () => {
-      setIsListening(false);
-    };
-
-    recognitionRef.current = recognition;
-
-    return () => recognition.stop();
-  }, []);
+return () => recognition.stop();
 
   /* ─── SPEAK AI QUESTION ─── */
   const speak = (text) => {
