@@ -270,7 +270,6 @@ const AiInterview = () => {
   /* ─── UI ─── */
   return (
     <>
-      <style>{CSS}</style>
 
       <div className="dashboard">
 
